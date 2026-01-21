@@ -35,11 +35,15 @@ public class LeaveService : ILeaveService
                 throw new InvalidOperationException($"User with ID {userId} does not exist");
             }
 
+            // Convert to UTC explicitly
+            var startDateUtc = DateTime.SpecifyKind(request.StartDate.Date, DateTimeKind.Utc);
+            var endDateUtc = DateTime.SpecifyKind(request.EndDate.Date, DateTimeKind.Utc);
+
             var entity = new LeaveRequest
             {
                 UserId = userId,
-                StartDate = request.StartDate.Date,
-                EndDate = request.EndDate.Date,
+                StartDate = startDateUtc,
+                EndDate = endDateUtc,
                 Reason = request.Reason,
                 Status = LeaveRequestStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
