@@ -1,5 +1,6 @@
 using LeaveManagement.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace LeaveManagement.API.Data;
 
@@ -24,10 +25,6 @@ public class AppDbContext : DbContext
             e.Property(x => x.Email).IsRequired().HasMaxLength(100);
             e.Property(x => x.FirstName).IsRequired().HasMaxLength(50);
             e.Property(x => x.LastName).IsRequired().HasMaxLength(50);
-            
-            // Ensure DateTime columns are UTC
-            e.Property(x => x.CreatedAt)
-                .HasConversion(v => v.Kind == DateTimeKind.Utc ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
             e.HasOne(x => x.Manager)
              .WithMany()
@@ -40,18 +37,6 @@ public class AppDbContext : DbContext
         {
             e.HasKey(x => x.Id);
             e.Property(x => x.Reason).IsRequired().HasMaxLength(500);
-            
-            // Ensure all DateTime columns are UTC
-            e.Property(x => x.StartDate)
-                .HasConversion(v => v.Kind == DateTimeKind.Utc ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc));
-            e.Property(x => x.EndDate)
-                .HasConversion(v => v.Kind == DateTimeKind.Utc ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc));
-            e.Property(x => x.CreatedAt)
-                .HasConversion(v => v.Kind == DateTimeKind.Utc ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc));
-            e.Property(x => x.UpdatedAt)
-                .HasConversion(v => v.Kind == DateTimeKind.Utc ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc));
-            e.Property(x => x.ReviewedAt)
-                .HasConversion(v => v.HasValue ? (v.Value.Kind == DateTimeKind.Utc ? v : DateTime.SpecifyKind(v.Value, DateTimeKind.Utc)) : null);
 
             e.HasOne(x => x.User)
              .WithMany(u => u.LeaveRequests)
@@ -62,25 +47,38 @@ public class AppDbContext : DbContext
 
     public override int SaveChanges()
     {
-        NormalizeDateTimes();
+        ConvertDatesToUtc();
         return base.SaveChanges();
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        NormalizeDateTimes();
-        return await base.SaveChangesAsync(cancellationToken);
+        ConvertDatesToUtc();
+        return base.SaveChangesAsync(cancellationToken);
     }
 
-    private void NormalizeDateTimes()
+    private void ConvertDatesToUtc()
     {
-        foreach (var entry in ChangeTracker.Entries())
+        var entries = ChangeTracker.Entries()
+            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+
+        foreach (var entry in entries)
         {
             foreach (var property in entry.Properties)
             {
-                if (property.CurrentValue is DateTime dt && dt.Kind == DateTimeKind.Unspecified)
+                if (property.Metadata.ClrType == typeof(DateTime))
                 {
-                    property.CurrentValue = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                    if (property.CurrentValue is DateTime dateTime && dateTime.Kind != DateTimeKind.Utc)
+                    {
+                        property.CurrentValue = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+                    }
+                }
+                else if (property.Metadata.ClrType == typeof(DateTime?))
+                {
+                    if (property.CurrentValue is DateTime dateTimeNullable && dateTimeNullable.Kind != DateTimeKind.Utc)
+                    {
+                        property.CurrentValue = DateTime.SpecifyKind(dateTimeNullable, DateTimeKind.Utc);
+                    }
                 }
             }
         }
