@@ -18,20 +18,49 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        var response = await _auth.RegisterAsync(request);
-        if (response == null)
-            return BadRequest("User with this email already exists.");
-
-        return Ok(response);
+        try
+        {
+            Console.WriteLine("=== Register attempt ===");
+            Console.WriteLine($"Email: {request?.Email}, Role: {request?.Role}, ManagerId: {request?.ManagerId}");
+            var response = await _auth.RegisterAsync(request);
+            if (response == null)
+            {
+                Console.WriteLine("Register failed: email exists");
+                return BadRequest("User with this email already exists.");
+            }
+            Console.WriteLine("Register success");
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Register error: {ex.Message}");
+            if (ex.InnerException != null) Console.WriteLine($"Inner: {ex.InnerException.Message}");
+            Console.WriteLine(ex.StackTrace);
+            return StatusCode(500, new { error = ex.Message, details = ex.InnerException?.Message });
+        }
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var response = await _auth.LoginAsync(request);
-        if (response == null)
-            return Unauthorized("Invalid email or password.");
-
-        return Ok(response);
+        try
+        {
+            Console.WriteLine($"=== Login attempt === {request?.Email}");
+            var response = await _auth.LoginAsync(request);
+            if (response == null)
+            {
+                Console.WriteLine("Login failed: invalid creds");
+                return Unauthorized("Invalid email or password.");
+            }
+            Console.WriteLine("Login success");
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Login error: {ex.Message}");
+            if (ex.InnerException != null) Console.WriteLine($"Inner: {ex.InnerException.Message}");
+            Console.WriteLine(ex.StackTrace);
+            return StatusCode(500, new { error = ex.Message, details = ex.InnerException?.Message });
+        }
     }
 }

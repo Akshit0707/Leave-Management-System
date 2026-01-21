@@ -24,36 +24,46 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponse?> RegisterAsync(RegisterRequest request)
     {
-        // Validate email doesn't exist
-        if (await _db.Users.AnyAsync(u => u.Email == request.Email))
-            return null;
-
-        // Convert int to UserRole enum
-        UserRole userRole = (UserRole)request.Role;
-
-        // Validate ManagerId if user is Employee
-        if (request.ManagerId.HasValue && userRole == UserRole.Employee)
+        try
         {
-            var managerExists = await _db.Users.AnyAsync(u => u.Id == request.ManagerId.Value && u.Role == UserRole.Manager);
-            if (!managerExists)
-                throw new ArgumentException("Invalid Manager ID");
+            // Validate email doesn't exist
+            if (await _db.Users.AnyAsync(u => u.Email == request.Email))
+                return null;
+
+            // Convert int to UserRole enum
+            UserRole userRole = (UserRole)request.Role;
+
+            // Validate ManagerId if user is Employee
+            if (request.ManagerId.HasValue && userRole == UserRole.Employee)
+            {
+                var managerExists = await _db.Users.AnyAsync(u => u.Id == request.ManagerId.Value && u.Role == UserRole.Manager);
+                if (!managerExists)
+                    throw new ArgumentException("Invalid Manager ID");
+            }
+
+            var user = new User
+            {
+                Email = request.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Role = userRole,
+                ManagerId = userRole == UserRole.Manager ? null : request.ManagerId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _db.Users.Add(user);
+            await _db.SaveChangesAsync();
+
+            return BuildToken(user);
         }
-
-        var user = new User
+        catch (Exception ex)
         {
-            Email = request.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Role = userRole,
-            ManagerId = userRole == UserRole.Manager ? null : request.ManagerId,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync();
-
-        return BuildToken(user);
+            Console.WriteLine($"RegisterAsync error: {ex.Message}");
+            if (ex.InnerException != null) Console.WriteLine($"Inner: {ex.InnerException.Message}");
+            Console.WriteLine(ex.StackTrace);
+            throw;
+        }
     }
 
     public async Task<AuthResponse?> LoginAsync(LoginRequest request)
