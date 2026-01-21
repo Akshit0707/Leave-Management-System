@@ -65,16 +65,32 @@ app.UseSwaggerUI();
 // Use CORS - MUST be before UseAuthentication and UseAuthorization
 app.UseCors("AllowAngularApp");
 
-app.UseHttpsRedirection();
+// Add a simple health check endpoint
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
+
+// Remove UseHttpsRedirection for Railway deployment
+// app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
+try
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        Console.WriteLine("=== Ensuring Database Created ===");
+        db.Database.EnsureCreated();
+        Console.WriteLine("=== Database Ready ===");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"=== DATABASE ERROR: {ex.Message} ===");
+    Console.WriteLine($"Stack: {ex.StackTrace}");
 }
 
+Console.WriteLine("=== Application Started Successfully ===");
 app.Run();
