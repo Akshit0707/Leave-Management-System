@@ -1,13 +1,12 @@
+using System.Text;
 using LeaveManagement.API.Data;
-// Enable legacy timestamp behavior for Npgsql (PostgreSQL)
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 using LeaveManagement.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
-using System.Text;
+// Enable legacy timestamp behavior for Npgsql (PostgreSQL)
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
