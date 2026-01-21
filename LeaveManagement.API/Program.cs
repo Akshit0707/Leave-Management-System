@@ -11,15 +11,31 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var builder = WebApplication.CreateBuilder(args);
 
 // Add CORS
-var allowedOrigins = builder.Configuration["AllowedOrigins"]?.Split(',') ?? Array.Empty<string>();
+var allowedOrigins = builder.Configuration["AllowedOrigins"]?.Split(',')
+    .Select(o => o.Trim())
+    .Where(o => !string.IsNullOrWhiteSpace(o))
+    .ToArray() ?? Array.Empty<string>();
+
+Console.WriteLine("AllowedOrigins: " + string.Join(" | ", allowedOrigins));
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.WithOrigins(allowedOrigins)
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        if (allowedOrigins.Length > 0)
+        {
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        }
+        else
+        {
+            // Fallback: allow any origin (for emergency production unblock)
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
     });
 });
 
