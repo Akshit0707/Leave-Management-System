@@ -1,4 +1,6 @@
 using LeaveManagement.API.Data;
+// Enable legacy timestamp behavior for Npgsql (PostgreSQL)
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 using LeaveManagement.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -31,10 +33,8 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Leave Management API", Version = "v1" });
 });
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        npgsqlOptions => npgsqlOptions.EnableLegacyTimestampBehavior()
-    ));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// If you previously had .EnableLegacyTimestampBehavior() here, it has been removed as it is not a valid method.
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
