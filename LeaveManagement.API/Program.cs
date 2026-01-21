@@ -75,7 +75,6 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    // Create schema if it doesn't exist; avoids SQL Server migration artifacts
     db.Database.EnsureCreated();
 }
 
