@@ -15,10 +15,16 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularApp", policy =>
     {
         var allowedOrigins = builder.Configuration["AllowedOrigins"] ?? "http://localhost:4200";
-        policy.WithOrigins("http://localhost:4200", allowedOrigins)
+        
+        // Split multiple origins if needed
+        var origins = allowedOrigins.Split(',').Select(o => o.Trim()).ToList();
+        origins.Add("http://localhost:4200"); // Always include localhost for dev
+        
+        policy.WithOrigins(origins.ToArray())
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowCredentials()
+              .SetIsOriginAllowedToAllowWildcardSubdomains();
     });
 });
 
@@ -57,11 +63,8 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // Use CORS - MUST be before UseAuthentication and UseAuthorization
 app.UseCors("AllowAngularApp");
