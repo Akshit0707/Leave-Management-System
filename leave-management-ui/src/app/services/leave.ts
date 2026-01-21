@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class LeaveService {
-  private apiUrl = 'http://localhost:5296/api/leaves';
+  private apiUrl = 'https://leave-management-system-production-0b95.up.railway.app/api/leaves';
 
   constructor(private http: HttpClient) {}
 

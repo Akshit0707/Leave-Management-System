@@ -7,7 +7,7 @@ import { BehaviorSubject, tap } from 'rxjs';
   providedIn: 'root',
 })
 export class Auth {
-  private apiUrl = "http://localhost:5296/api/auth";
+  private apiUrl = "http://localhost:5296/api/https://leave-management-system-production-0b95.up.railway.app/api/auth";
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
 
