@@ -1,0 +1,79 @@
+<div class="my-leaves">
+  <div class="page-header">
+    <h1>My Leave Requests</h1>
+    <p>View and manage your leave requests</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading your requests...</p>
+  </div>
+
+  <div *ngIf="!isLoading && leaves.length === 0" class="no-data">
+    <p>No leave requests found.</p>
+  </div>
+
+  <div *ngIf="!isLoading && leaves.length > 0" class="leaves-table-container">
+    <table class="leaves-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Days</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Manager Comments</th>
+          <th>Created At</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let leave of leaves" [ngClass]="'status-' + getStatusClass(leave.status)">
+          <td>{{ leave.id }}</td>
+          <td>{{ leave.startDate | date: 'MMM dd, yyyy' }}</td>
+          <td>{{ leave.endDate | date: 'MMM dd, yyyy' }}</td>
+          <td>{{ leave.daysCount }}</td>
+          <td>{{ leave.reason }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="'status-' + getStatusClass(leave.status)">
+              {{ leave.status }}
+            </span>
+          </td>
+          <td>{{ leave.managerComments || '-' }}</td>
+          <td>{{ leave.createdAt | date: 'MMM dd, yyyy' }}</td>
+          <td>
+            <div *ngIf="canDelete(leave)" class="action-cell">
+              <div *ngIf="deleteConfirmId !== leave.id">
+                <button 
+                  class="delete-btn" 
+                  (click)="confirmDelete(leave.id)"
+                  title="Delete pending request"
+                >
+                  🗑️
+                </button>
+              </div>
+              <div *ngIf="deleteConfirmId === leave.id" class="confirm-delete">
+                <p>Delete?</p>
+                <button 
+                  class="confirm-btn" 
+                  (click)="deleteLeave(leave.id)"
+                  [disabled]="isDeletingId === leave.id"
+                >
+                  {{ isDeletingId === leave.id ? '...' : 'Yes' }}
+                </button>
+                <button 
+                  class="cancel-btn" 
+                  (click)="cancelDelete()"
+                  [disabled]="isDeletingId === leave.id"
+                >
+                  No
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

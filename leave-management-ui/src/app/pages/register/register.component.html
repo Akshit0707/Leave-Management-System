@@ -1,0 +1,100 @@
+<div class="register-container">
+  <div class="register-card">
+    <h2>Leave Management System</h2>
+    <p class="subtitle">Create your account</p>
+
+    <form (ngSubmit)="register()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name: <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="firstName" 
+            [(ngModel)]="firstName" 
+            name="firstName"
+            placeholder="Enter your first name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name: <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="lastName" 
+            [(ngModel)]="lastName" 
+            name="lastName"
+            placeholder="Enter your last name"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email: <span class="required">*</span></label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="email" 
+          name="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password: <span class="required">*</span></label>
+        <input 
+          type="password" 
+          id="password" 
+          [(ngModel)]="password" 
+          name="password"
+          placeholder="Enter your password (min 6 characters)"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password: <span class="required">*</span></label>
+        <input 
+          type="password" 
+          id="confirmPassword" 
+          [(ngModel)]="confirmPassword" 
+          name="confirmPassword"
+          placeholder="Confirm your password"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role: <span class="required">*</span></label>
+        <select id="role" [(ngModel)]="role" (change)="role === 1 && (managerId = null)" name="role" required>
+          <option [value]="0">Employee</option>
+          <option [value]="1">Manager</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="role === 0">
+        <label for="managerId">Manager ID (Optional):</label>
+        <input 
+          type="number" 
+          id="managerId" 
+          [(ngModel)]="managerId" 
+          name="managerId"
+          placeholder="Enter your manager's ID"
+        />
+        <small class="help-text">Leave empty if you don't have a manager yet</small>
+      </div>
+
+      <div *ngIf="error" class="error-message">{{ error }}</div>
+
+      <button type="submit" [disabled]="isLoading" class="register-btn">
+        {{ isLoading ? 'Creating Account...' : 'Register' }}
+      </button>
+
+      <div class="login-link">
+        Already have an account? <a routerLink="/login">Login here</a>
+      </div>
+    </form>
+  </div>
+</div>

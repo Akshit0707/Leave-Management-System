@@ -1,0 +1,77 @@
+<!-- Manager Dashboard -->
+<div *ngIf="isManager" class="dashboard-container manager-dashboard">
+  <div class="welcome-section">
+    <div class="welcome-header">
+      <h1>Welcome Back, {{ userName }}</h1>
+      <span class="role-tag manager">Manager</span>
+    </div>
+  </div>
+  <app-pending-leaves></app-pending-leaves>
+</div>
+
+<!-- Employee Dashboard -->
+<div *ngIf="!isManager" class="dashboard-container employee-dashboard">
+  <div class="welcome-section">
+    <div class="welcome-header">
+      <h1>Welcome Back, {{ userName }}</h1>
+      <span class="role-tag employee">Employee</span>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading your statistics...</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="stats-container">
+      <div class="stats-grid">
+        <div class="stat-card total">
+          <div class="stat-icon">📊</div>
+          <div class="stat-info">
+            <p class="stat-label">Total Requests</p>
+            <p class="stat-value">{{ summary.totalRequests }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card approved">
+          <div class="stat-icon">✓</div>
+          <div class="stat-info">
+            <p class="stat-label">Approved</p>
+            <p class="stat-value">{{ summary.approvedRequests }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card pending">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-info">
+            <p class="stat-label">Pending</p>
+            <p class="stat-value">{{ summary.pendingRequests }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card rejected">
+          <div class="stat-icon">✕</div>
+          <div class="stat-info">
+            <p class="stat-label">Rejected</p>
+            <p class="stat-value">{{ summary.rejectedRequests }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card days-requested">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <p class="stat-label">Days Requested</p>
+            <p class="stat-value">{{ summary.totalDaysRequested }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card days-approved">
+          <div class="stat-icon">✓📅</div>
+          <div class="stat-info">
+            <p class="stat-label">Days Approved</p>
+            <p class="stat-value">{{ summary.totalDaysApproved }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

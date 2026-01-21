@@ -1,0 +1,143 @@
+<div class="pending-leaves-container">
+  <div class="header-section">
+    <h1>Pending Leave Approvals</h1>
+    <p class="subtitle">Review and manage employee leave requests</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading pending requests...</p>
+  </div>
+
+  <div *ngIf="!isLoading && leaves.length === 0" class="empty-state">
+    <div class="empty-icon">✓</div>
+    <h2>All Caught Up!</h2>
+    <p>No pending leave requests at the moment.</p>
+  </div>
+
+  <div *ngIf="!isLoading && leaves.length > 0">
+    <div class="leaves-grid">
+      <div *ngFor="let leave of leaves" class="leave-card">
+        <div class="card-header">
+          <div class="employee-info">
+            <h3 class="employee-name">{{ leave.userName }}</h3>
+            <span class="request-id">#{{ leave.id }}</span>
+          </div>
+          <span class="status-badge pending">Pending</span>
+        </div>
+
+        <div class="card-content">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Start Date</span>
+              <span class="info-value">{{ leave.startDate | date: 'MMM dd, yyyy' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">End Date</span>
+              <span class="info-value">{{ leave.endDate | date: 'MMM dd, yyyy' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Duration</span>
+              <span class="info-value">{{ getDaysCount(leave.startDate, leave.endDate) }} days</span>
+            </div>
+          </div>
+
+          <div class="reason-section">
+            <span class="reason-label">Reason:</span>
+            <p class="reason-text">{{ leave.reason }}</p>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button class="btn btn-approve" (click)="openApproveDialog(leave)">
+            <span class="btn-icon">✓</span> Approve
+          </button>
+          <button class="btn btn-reject" (click)="openRejectDialog(leave)">
+            <span class="btn-icon">✕</span> Reject
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Overlay -->
+  <div *ngIf="selectedLeave" class="modal-overlay" (click)="closeDialog()"></div>
+
+  <!-- Approve Dialog -->
+  <div *ngIf="selectedLeave && actionType === 'approve'" class="action-modal approve-modal">
+    <div class="modal-header">
+      <h2>Approve Leave Request</h2>
+      <button class="close-btn" (click)="closeDialog()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="leave-details">
+        <p><strong>Employee:</strong> {{ selectedLeave.userName }}</p>
+        <p><strong>Period:</strong> {{ selectedLeave.startDate | date: 'MMM dd, yyyy' }} - {{ selectedLeave.endDate | date: 'MMM dd, yyyy' }}</p>
+        <p><strong>Days:</strong> {{ getDaysCount(selectedLeave.startDate, selectedLeave.endDate) }} days</p>
+      </div>
+
+      <div class="form-group">
+        <label for="approveComment">Manager Comment (Optional)</label>
+        <textarea 
+          id="approveComment"
+          [(ngModel)]="managerComment" 
+          placeholder="Add any comments or notes for the employee..."
+          rows="4"
+          class="comment-textarea"
+        ></textarea>
+      </div>
+
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeDialog()" [disabled]="isSubmitting">Cancel</button>
+      <button class="btn btn-approve-primary" (click)="approve()" [disabled]="isSubmitting">
+        <span *ngIf="!isSubmitting">✓ Approve Leave</span>
+        <span *ngIf="isSubmitting">Processing...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Reject Dialog -->
+  <div *ngIf="selectedLeave && actionType === 'reject'" class="action-modal reject-modal">
+    <div class="modal-header">
+      <h2>Reject Leave Request</h2>
+      <button class="close-btn" (click)="closeDialog()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="leave-details">
+        <p><strong>Employee:</strong> {{ selectedLeave.userName }}</p>
+        <p><strong>Period:</strong> {{ selectedLeave.startDate | date: 'MMM dd, yyyy' }} - {{ selectedLeave.endDate | date: 'MMM dd, yyyy' }}</p>
+        <p><strong>Days:</strong> {{ getDaysCount(selectedLeave.startDate, selectedLeave.endDate) }} days</p>
+      </div>
+
+      <div class="form-group">
+        <label for="rejectComment">Reason for Rejection <span class="required">*</span></label>
+        <textarea 
+          id="rejectComment"
+          [(ngModel)]="managerComment" 
+          placeholder="Please provide a reason for rejection..."
+          rows="4"
+          class="comment-textarea"
+        ></textarea>
+      </div>
+
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeDialog()" [disabled]="isSubmitting">Cancel</button>
+      <button class="btn btn-reject-primary" (click)="reject()" [disabled]="isSubmitting || !managerComment.trim()">
+        <span *ngIf="!isSubmitting">✕ Reject Leave</span>
+        <span *ngIf="isSubmitting">Processing...</span>
+      </button>
+    </div>
+  </div>
+</div>
