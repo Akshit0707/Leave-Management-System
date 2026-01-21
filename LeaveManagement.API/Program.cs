@@ -92,5 +92,6 @@ catch (Exception ex)
     Console.WriteLine($"Stack: {ex.StackTrace}");
 }
 
+Console.WriteLine("AllowedOrigins: " + string.Join(" | ", allowedOrigins));
 Console.WriteLine("=== Application Started Successfully ===");
 app.Run();
