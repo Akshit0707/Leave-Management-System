@@ -16,25 +16,54 @@ public class LeaveService : ILeaveService
 
     public async Task<LeaveRequestDto?> CreateAsync(int userId, CreateLeaveRequest request)
     {
-        if (request.StartDate.Date > request.EndDate.Date)
-            return null;
-
-        var entity = new LeaveRequest
+        try
         {
-            UserId = userId,
-            StartDate = request.StartDate.Date,
-            EndDate = request.EndDate.Date,
-            Reason = request.Reason,
-            Status = LeaveRequestStatus.Pending,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
+            Console.WriteLine($"Creating leave for userId: {userId}");
+            Console.WriteLine($"StartDate: {request.StartDate}, EndDate: {request.EndDate}");
+            
+            if (request.StartDate.Date > request.EndDate.Date)
+            {
+                Console.WriteLine("Invalid date range");
+                return null;
+            }
 
-        _db.LeaveRequests.Add(entity);
-        await _db.SaveChangesAsync();
-        await _db.Entry(entity).Reference(e => e.User).LoadAsync();
+            // Verify user exists
+            var userExists = await _db.Users.AnyAsync(u => u.Id == userId);
+            if (!userExists)
+            {
+                Console.WriteLine($"User {userId} not found in database");
+                throw new InvalidOperationException($"User with ID {userId} does not exist");
+            }
 
-        return MapToDto(entity);
+            var entity = new LeaveRequest
+            {
+                UserId = userId,
+                StartDate = request.StartDate.Date,
+                EndDate = request.EndDate.Date,
+                Reason = request.Reason,
+                Status = LeaveRequestStatus.Pending,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _db.LeaveRequests.Add(entity);
+            await _db.SaveChangesAsync();
+            
+            Console.WriteLine($"Leave created successfully with ID: {entity.Id}");
+            
+            // Load the user after saving
+            var leaveWithUser = await _db.LeaveRequests
+                .Include(l => l.User)
+                .FirstOrDefaultAsync(l => l.Id == entity.Id);
+
+            return MapToDto(leaveWithUser ?? entity);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"LeaveService.CreateAsync Error: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            throw;
+        }
     }
 
     public async Task<IEnumerable<LeaveRequestDto>> GetMyAsync(int userId)
@@ -79,7 +108,7 @@ public class LeaveService : ILeaveService
     {
         var leave = await _db.LeaveRequests.FirstOrDefaultAsync(l => l.Id == id);
         if (leave == null || leave.UserId != userId) return false;
-        if (leave.Status != LeaveRequestStatus.Pending) return false; // Can only delete pending
+        if (leave.Status != LeaveRequestStatus.Pending) return false;
 
         _db.LeaveRequests.Remove(leave);
         await _db.SaveChangesAsync();
