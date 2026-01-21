@@ -19,20 +19,10 @@ public class LeaveService : ILeaveService
         try
         {
             Console.WriteLine($"Creating leave for userId: {userId}");
+            Console.WriteLine($"Request StartDate: {request.StartDate}, Kind: {request.StartDate.Kind}");
+            Console.WriteLine($"Request EndDate: {request.EndDate}, Kind: {request.EndDate.Kind}");
             
-            // Parse and convert dates to UTC
-            if (!DateTime.TryParse(request.StartDate.ToString(), out var startDate))
-                startDate = request.StartDate;
-            if (!DateTime.TryParse(request.EndDate.ToString(), out var endDate))
-                endDate = request.EndDate;
-
-            // Ensure UTC
-            startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, 0, 0, 0, DateTimeKind.Utc);
-            endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, 23, 59, 59, DateTimeKind.Utc);
-
-            Console.WriteLine($"StartDate (UTC): {startDate}, EndDate (UTC): {endDate}");
-            
-            if (startDate.Date > endDate.Date)
+            if (request.StartDate.Date > request.EndDate.Date)
             {
                 Console.WriteLine("Invalid date range");
                 return null;
@@ -46,18 +36,43 @@ public class LeaveService : ILeaveService
                 throw new InvalidOperationException($"User {userId} does not exist");
             }
 
+            // Force UTC explicitly - create new DateTime with UTC kind
+            var startDateUtc = new DateTime(
+                request.StartDate.Year, 
+                request.StartDate.Month, 
+                request.StartDate.Day, 
+                0, 0, 0, 
+                DateTimeKind.Utc
+            );
+            
+            var endDateUtc = new DateTime(
+                request.EndDate.Year, 
+                request.EndDate.Month, 
+                request.EndDate.Day, 
+                23, 59, 59, 
+                DateTimeKind.Utc
+            );
+
+            Console.WriteLine($"Converted StartDate: {startDateUtc}, Kind: {startDateUtc.Kind}");
+            Console.WriteLine($"Converted EndDate: {endDateUtc}, Kind: {endDateUtc.Kind}");
+
             var entity = new LeaveRequest
             {
                 UserId = userId,
-                StartDate = startDate,
-                EndDate = endDate,
+                StartDate = startDateUtc,
+                EndDate = endDateUtc,
                 Reason = request.Reason ?? string.Empty,
                 Status = LeaveRequestStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
 
+            Console.WriteLine($"Entity StartDate Kind: {entity.StartDate.Kind}");
+            Console.WriteLine($"Entity EndDate Kind: {entity.EndDate.Kind}");
+            Console.WriteLine($"Entity CreatedAt Kind: {entity.CreatedAt.Kind}");
+
             _db.LeaveRequests.Add(entity);
+            Console.WriteLine("About to save changes...");
             await _db.SaveChangesAsync();
             
             Console.WriteLine($"Leave created: ID={entity.Id}");
@@ -70,9 +85,10 @@ public class LeaveService : ILeaveService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"ERROR: {ex.Message}");
-            Console.WriteLine($"Inner: {ex.InnerException?.Message}");
-            Console.WriteLine(ex.StackTrace);
+            Console.WriteLine($"ERROR in CreateAsync: {ex.Message}");
+            if (ex.InnerException != null)
+                Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
             throw;
         }
     }
