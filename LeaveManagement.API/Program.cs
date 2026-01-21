@@ -14,17 +14,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        var allowedOrigins = builder.Configuration["AllowedOrigins"] ?? "http://localhost:4200";
-        
-        // Split multiple origins if needed
-        var origins = allowedOrigins.Split(',').Select(o => o.Trim()).ToList();
-        origins.Add("http://localhost:4200"); // Always include localhost for dev
-        
-        policy.WithOrigins(origins.ToArray())
+        policy.WithOrigins(
+                "http://localhost:4200",
+                "https://lmsdotnent.netlify.app"
+              )
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials()
-              .SetIsOriginAllowedToAllowWildcardSubdomains();
+              .AllowCredentials();
     });
 });
 
