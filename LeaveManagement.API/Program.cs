@@ -31,7 +31,10 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Leave Management API", Version = "v1" });
 });
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        npgsqlOptions => npgsqlOptions.EnableLegacyTimestampBehavior()
+    ));
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
