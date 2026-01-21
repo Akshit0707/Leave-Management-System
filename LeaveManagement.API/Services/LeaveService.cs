@@ -14,68 +14,37 @@ public class LeaveService : ILeaveService
         _db = db;
     }
 
+
+
     public async Task<LeaveRequestDto?> CreateAsync(int userId, CreateLeaveRequest request)
     {
         try
         {
-            Console.WriteLine($"Creating leave for userId: {userId}");
-            Console.WriteLine($"Request StartDate: {request.StartDate}, Kind: {request.StartDate.Kind}");
-            Console.WriteLine($"Request EndDate: {request.EndDate}, Kind: {request.EndDate.Kind}");
-            
-            if (request.StartDate.Date > request.EndDate.Date)
-            {
-                Console.WriteLine("Invalid date range");
+            // Always force UTC for all DateTimes
+            DateTime startDate = DateTime.SpecifyKind(request.StartDate, DateTimeKind.Utc);
+            DateTime endDate = DateTime.SpecifyKind(request.EndDate, DateTimeKind.Utc);
+
+            if (startDate > endDate)
                 return null;
-            }
 
             // Verify user exists
             var userExists = await _db.Users.AnyAsync(u => u.Id == userId);
             if (!userExists)
-            {
-                Console.WriteLine($"User {userId} not found");
                 throw new InvalidOperationException($"User {userId} does not exist");
-            }
-
-            // Force UTC explicitly - create new DateTime with UTC kind
-            var startDateUtc = new DateTime(
-                request.StartDate.Year, 
-                request.StartDate.Month, 
-                request.StartDate.Day, 
-                0, 0, 0, 
-                DateTimeKind.Utc
-            );
-            
-            var endDateUtc = new DateTime(
-                request.EndDate.Year, 
-                request.EndDate.Month, 
-                request.EndDate.Day, 
-                23, 59, 59, 
-                DateTimeKind.Utc
-            );
-
-            Console.WriteLine($"Converted StartDate: {startDateUtc}, Kind: {startDateUtc.Kind}");
-            Console.WriteLine($"Converted EndDate: {endDateUtc}, Kind: {endDateUtc.Kind}");
 
             var entity = new LeaveRequest
             {
                 UserId = userId,
-                StartDate = startDateUtc,
-                EndDate = endDateUtc,
+                StartDate = startDate,
+                EndDate = endDate,
                 Reason = request.Reason ?? string.Empty,
                 Status = LeaveRequestStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
 
-            Console.WriteLine($"Entity StartDate Kind: {entity.StartDate.Kind}");
-            Console.WriteLine($"Entity EndDate Kind: {entity.EndDate.Kind}");
-            Console.WriteLine($"Entity CreatedAt Kind: {entity.CreatedAt.Kind}");
-
             _db.LeaveRequests.Add(entity);
-            Console.WriteLine("About to save changes...");
             await _db.SaveChangesAsync();
-            
-            Console.WriteLine($"Leave created: ID={entity.Id}");
             
             var leaveWithUser = await _db.LeaveRequests
                 .Include(l => l.User)

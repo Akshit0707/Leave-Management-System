@@ -13,7 +13,7 @@ public class User
     public User? Manager { get; set; }
 
     public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } // No default value!
 }
 
 public enum UserRole
