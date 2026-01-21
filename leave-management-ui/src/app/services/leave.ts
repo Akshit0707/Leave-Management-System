@@ -11,7 +11,11 @@ export class LeaveService {
   constructor(private http: HttpClient) {}
 
   createLeave(startDate: string, endDate: string, reason: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, { startDate, endDate, reason });
+    return this.http.post(`${this.apiUrl}`, { 
+      StartDate: startDate,
+      EndDate: endDate,
+      Reason: reason
+    });
   }
 
   getMyLeaves(): Observable<any[]> {
@@ -23,7 +27,10 @@ export class LeaveService {
   }
 
   updateLeaveStatus(id: number, status: number, managerComments: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}/status`, { status, managerComments });
+    return this.http.put(`${this.apiUrl}/${id}/status`, { 
+      Status: status,
+      ManagerComments: managerComments
+    });
   }
 
   deleteLeave(id: number): Observable<any> {
