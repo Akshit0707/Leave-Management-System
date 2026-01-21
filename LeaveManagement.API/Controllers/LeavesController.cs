@@ -13,12 +13,10 @@ namespace LeaveManagement.API.Controllers;
 public class LeavesController : ControllerBase
 {
     private readonly ILeaveService _service;
-    private readonly ILogger<LeavesController> _logger;
 
-    public LeavesController(ILeaveService service, ILogger<LeavesController> logger)
+    public LeavesController(ILeaveService service)
     {
         _service = service;
-        _logger = logger;
     }
 
     private int GetUserId()
@@ -28,10 +26,11 @@ public class LeavesController : ControllerBase
         
         if (string.IsNullOrEmpty(id))
         {
-            _logger.LogError("User ID not found in token claims");
+            Console.WriteLine("ERROR: User ID not found in token claims");
             throw new InvalidOperationException("User id missing from token");
         }
         
+        Console.WriteLine($"Extracted User ID: {id}");
         return int.Parse(id);
     }
 
@@ -40,30 +39,35 @@ public class LeavesController : ControllerBase
     {
         try
         {
-            _logger.LogInformation("Creating leave request");
+            Console.WriteLine("=== CREATE LEAVE REQUEST STARTED ===");
             
             var userId = GetUserId();
-            _logger.LogInformation($"User ID from token: {userId}");
+            Console.WriteLine($"User ID from token: {userId}");
             
             var result = await _service.CreateAsync(userId, request);
             if (result == null)
             {
-                _logger.LogWarning("Invalid date range provided");
+                Console.WriteLine("Invalid date range provided");
                 return BadRequest(new { error = "Invalid date range" });
             }
             
-            _logger.LogInformation($"Leave created successfully: {result.Id}");
+            Console.WriteLine($"Leave created successfully: {result.Id}");
             return Ok(result);
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError($"Operation error: {ex.Message}");
+            Console.WriteLine($"Operation error: {ex.Message}");
             return BadRequest(new { error = ex.Message });
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error creating leave: {ex.Message}");
-            _logger.LogError($"Stack trace: {ex.StackTrace}");
+            Console.WriteLine($"=== ERROR CREATING LEAVE ===");
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+            }
             return StatusCode(500, new { error = ex.Message, details = ex.InnerException?.Message });
         }
     }
@@ -78,7 +82,7 @@ public class LeavesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error fetching leaves: {ex.Message}");
+            Console.WriteLine($"Error fetching leaves: {ex.Message}");
             return StatusCode(500, new { error = ex.Message });
         }
     }
@@ -94,7 +98,7 @@ public class LeavesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error fetching pending leaves: {ex.Message}");
+            Console.WriteLine($"Error fetching pending leaves: {ex.Message}");
             return StatusCode(500, new { error = ex.Message });
         }
     }
@@ -111,7 +115,7 @@ public class LeavesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error updating leave status: {ex.Message}");
+            Console.WriteLine($"Error updating leave status: {ex.Message}");
             return StatusCode(500, new { error = ex.Message });
         }
     }
@@ -127,7 +131,7 @@ public class LeavesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error fetching summary: {ex.Message}");
+            Console.WriteLine($"Error fetching summary: {ex.Message}");
             return StatusCode(500, new { error = ex.Message });
         }
     }
@@ -145,7 +149,7 @@ public class LeavesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error deleting leave: {ex.Message}");
+            Console.WriteLine($"Error deleting leave: {ex.Message}");
             return StatusCode(500, new { error = ex.Message });
         }
     }
