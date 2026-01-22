@@ -45,8 +45,8 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Leave Management API", Version = "v1" });
 });
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // If you previously had .EnableLegacyTimestampBehavior() here, it has been removed as it is not a valid method.
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import {  LeaveService } from './leave';
 
-import { Leave } from './leave';
+
 
 describe('Leave', () => {
-  let service: Leave;
+  let service: LeaveService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(Leave);
+    service = TestBed.inject(LeaveService);
   });
 
   it('should be created', () => {

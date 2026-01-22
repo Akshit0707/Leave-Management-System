@@ -13,3 +13,5 @@ dist/
 # Environment
 appsettings.Development.json
 .env
+
+.fake

@@ -1,7 +1,20 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpEvent } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
 
-import { authInterceptorInterceptor } from './auth.interceptor-interceptor';
+function authInterceptorInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
+  // Example: Add an Authorization header if a token exists
+  const token = 'dummy-token'; // Replace with actual token retrieval logic
+  let authReq = req;
+  if (token) {
+    authReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+  return next(authReq);
+}
 
 describe('authInterceptorInterceptor', () => {
   const interceptor: HttpInterceptorFn = (req, next) => 
@@ -15,3 +28,4 @@ describe('authInterceptorInterceptor', () => {
     expect(interceptor).toBeTruthy();
   });
 });
+
