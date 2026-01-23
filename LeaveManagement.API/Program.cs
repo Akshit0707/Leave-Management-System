@@ -4,7 +4,6 @@ using LeaveManagement.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -23,15 +22,19 @@ builder.WebHost.ConfigureKestrel(o =>
    CONFIG
 ======================= */
 builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false)
+    .AddJsonFile("appsettings.json", optional: true)
     .AddEnvironmentVariables();
 
 /* =======================
-   CORS (STRICT)
+   CORS
 ======================= */
 var allowedOrigins = builder.Configuration["AllowedOrigins"]
     ?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-    ?? throw new InvalidOperationException("AllowedOrigins not configured");
+    ?? new[]
+    {
+        "http://localhost:4200",
+        "https://leavemgmtsy.netlify.app"
+    };
 
 builder.Services.AddCors(options =>
 {
@@ -52,15 +55,34 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+/* =======================
+   DATABASE (AUTO-DETECT)
+======================= */
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+    if (string.IsNullOrWhiteSpace(connectionString))
+        throw new Exception("Database connection string not found");
+
+    if (connectionString.StartsWith("Host=") ||
+        connectionString.StartsWith("postgres", StringComparison.OrdinalIgnoreCase))
+    {
+        // Railway / PostgreSQL
+        options.UseNpgsql(connectionString);
+    }
+    else
+    {
+        // Local / SQL Server
+        options.UseSqlServer(connectionString);
+    }
+});
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 
 /* =======================
-   JWT
+   JWT AUTH
 ======================= */
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? throw new InvalidOperationException("JWT Key missing");
@@ -85,30 +107,19 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 /* =======================
-   PIPELINE (CRITICAL)
+   PIPELINE
 ======================= */
 app.UseSwagger();
 app.UseSwaggerUI();
 
-/* 🔴 HARD FIX: HANDLE OPTIONS BEFORE ROUTING */
-app.Use(async (context, next) =>
-{
-    if (context.Request.Method == HttpMethods.Options)
-    {
-        context.Response.StatusCode = StatusCodes.Status204NoContent;
-        return;
-    }
-    await next();
-});
-
 app.UseRouting();
+
 app.UseCors("AllowAngularApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapGet("/health", () => Results.Ok("Healthy"));
 
 app.Run();
