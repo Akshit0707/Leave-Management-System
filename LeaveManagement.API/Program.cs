@@ -6,10 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+// PostgreSQL timestamp fix
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 /* =======================
-   Railway PORT FIX
+   Railway PORT CONFIG
 ======================= */
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.ConfigureKestrel(options =>
@@ -18,7 +21,7 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 /* =======================
-   Configuration
+   CONFIGURATION
 ======================= */
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false)
@@ -46,7 +49,7 @@ builder.Services.AddCors(options =>
         }
         else
         {
-            // SAFE fallback (no credentials)
+            // Temporary fallback (remove later)
             policy.AllowAnyOrigin()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
@@ -73,8 +76,14 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+/* =======================
+   DATABASE (PostgreSQL)
+======================= */
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ILeaveService, LeaveService>();
@@ -130,7 +139,7 @@ try
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     Console.WriteLine("Ensuring database exists...");
-    db.Database.EnsureCreated();
+    db.Database.EnsureCreated(); // Replace with Migrate() later
     Console.WriteLine("Database ready");
 }
 catch (Exception ex)
@@ -139,5 +148,5 @@ catch (Exception ex)
     Console.WriteLine(ex.Message);
 }
 
-Console.WriteLine("Application started on port " + port);
+Console.WriteLine($"Application started on port {port}");
 app.Run();
