@@ -45,10 +45,10 @@ public class AuthService : IAuthService
 
             var user = new User
             {
-                Email = request.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                FirstName = request.FirstName,
-                LastName = request.LastName,
+                Email = request.Email ?? string.Empty,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password ?? string.Empty),
+                FirstName = request.FirstName ?? string.Empty,
+                LastName = request.LastName ?? string.Empty,
                 Role = userRole,
                 ManagerId = userRole == UserRole.Manager ? null : request.ManagerId,
                 CreatedAt = DateTime.UtcNow
@@ -107,7 +107,7 @@ public class AuthService : IAuthService
             Email = user.Email,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Role = user.Role.ToString(),
+            Role = user.Role,
             Token = new JwtSecurityTokenHandler().WriteToken(token)
         };
     }
