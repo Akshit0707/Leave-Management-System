@@ -26,12 +26,14 @@ public class AuthService : IAuthService
     {
         try
         {
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
             // Validate email doesn't exist
             if (await _db.Users.AnyAsync(u => u.Email == request.Email))
                 return null;
 
-            // Convert int to UserRole enum
-            UserRole userRole = (UserRole)request.Role;
+            // Use UserRole from request
+            UserRole userRole = request.Role;
 
             // Validate ManagerId if user is Employee
             if (request.ManagerId.HasValue && userRole == UserRole.Employee)
@@ -68,6 +70,8 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponse?> LoginAsync(LoginRequest request)
     {
+        if (request == null)
+            throw new ArgumentNullException(nameof(request));
         var user = await _db.Users.SingleOrDefaultAsync(u => u.Email == request.Email);
         if (user == null) return null;
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash)) return null;
