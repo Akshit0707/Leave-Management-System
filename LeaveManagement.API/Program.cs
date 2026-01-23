@@ -56,26 +56,28 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 /* =======================
-   DATABASE (AUTO-DETECT)
+   DATABASE (RAILWAY SAFE)
 ======================= */
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    // Try .NET connection string first
+    var connectionString =
+        builder.Configuration.GetConnectionString("DefaultConnection");
 
+    // Railway fallback
     if (string.IsNullOrWhiteSpace(connectionString))
-        throw new Exception("Database connection string not found");
+    {
+        connectionString = builder.Configuration["DATABASE_URL"];
+    }
 
-    if (connectionString.StartsWith("Host=") ||
-        connectionString.StartsWith("postgres", StringComparison.OrdinalIgnoreCase))
+    // Final safety (DO NOT CRASH APP)
+    if (string.IsNullOrWhiteSpace(connectionString))
     {
-        // Railway / PostgreSQL
-        options.UseNpgsql(connectionString);
+        Console.WriteLine("⚠️ DATABASE CONNECTION STRING NOT FOUND");
+        return;
     }
-    else
-    {
-        // Local / SQL Server
-        options.UseSqlServer(connectionString);
-    }
+
+    options.UseNpgsql(connectionString);
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -106,6 +108,9 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+/* =======================
+   APPLY MIGRATIONS
+======================= */
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
