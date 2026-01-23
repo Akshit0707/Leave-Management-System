@@ -70,7 +70,7 @@ builder.Services.AddSwaggerGen();
    DATABASE (RAILWAY SAFE)
 ======================= */
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(GetConnectionString()));
+    options.UseNpgsql(GetConnectionString(builder)));
 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -134,15 +134,17 @@ app.Run();
 /* =======================
    HELPER METHODS
 ======================= */
-string GetConnectionString()
+string GetConnectionString(WebApplicationBuilder builder)
 {
     var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
     if (string.IsNullOrEmpty(databaseUrl))
         return builder.Configuration.GetConnectionString("DefaultConnection");
 
+    // If it's already in ADO.NET format, just return it
     if (databaseUrl.Contains("Host="))
         return databaseUrl;
 
+    // Otherwise, parse the URL format
     var uri = new Uri(databaseUrl);
     var userInfo = uri.UserInfo.Split(':');
     var csBuilder = new Npgsql.NpgsqlConnectionStringBuilder
