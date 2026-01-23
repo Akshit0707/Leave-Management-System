@@ -17,7 +17,7 @@ export class RegisterComponent {
   confirmPassword: string = '';
   firstName: string = '';
   lastName: string = '';
-  role: number = 0; // 0 = Employee, 1 = Manager
+  role: string = 'Employee'; // 'Employee' or 'Manager'
   managerId: number | null = null;
   error: string = '';
   isLoading: boolean = false;
@@ -52,7 +52,7 @@ export class RegisterComponent {
     this.error = '';
 
     // Set managerId to null if Manager is selected
-    const managerId = this.role === 1 ? null : this.managerId;
+    const managerId = this.role === 'Manager' ? null : this.managerId;
 
     this.authService.register(
       this.email,

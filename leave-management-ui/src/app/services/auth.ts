@@ -24,16 +24,16 @@ export class Auth {
     password: string,
     firstName: string,
     lastName: string,
-    role: number,
+    role: string,
     managerId: number | null = null
   ) {
     return this.http.post<any>(`${this.apiUrl}/register`, {
-      Email: email,
-      Password: password,
-      FirstName: firstName,
-      LastName: lastName,
-      Role: role,
-      ManagerId: managerId
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      role: role,
+      managerId: managerId
     }).pipe(
       tap(response => this.handleAuthSuccess(response))
     );
