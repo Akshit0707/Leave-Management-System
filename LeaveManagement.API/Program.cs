@@ -60,21 +60,14 @@ builder.Services.AddSwaggerGen();
 ======================= */
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    // Try .NET connection string first
     var connectionString =
-        builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? builder.Configuration["DATABASE_URL"];
 
-    // Railway fallback
     if (string.IsNullOrWhiteSpace(connectionString))
     {
-        connectionString = builder.Configuration["DATABASE_URL"];
-    }
-
-    // Final safety (DO NOT CRASH APP)
-    if (string.IsNullOrWhiteSpace(connectionString))
-    {
-        Console.WriteLine("⚠️ DATABASE CONNECTION STRING NOT FOUND");
-        return;
+        Console.WriteLine("❌ DATABASE CONNECTION STRING NOT FOUND");
+        return; // Safe: app starts but DB is unavailable
     }
 
     options.UseNpgsql(connectionString);
@@ -114,8 +107,17 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+
+    if (db.Database.ProviderName != null)
+    {
+        db.Database.Migrate();
+    }
+    else
+    {
+        Console.WriteLine("⚠️ Skipping migrations — no DB provider configured");
+    }
 }
+
 
 /* =======================
    PIPELINE
