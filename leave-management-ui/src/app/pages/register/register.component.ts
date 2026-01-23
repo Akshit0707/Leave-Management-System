@@ -67,7 +67,17 @@ export class RegisterComponent {
       },
       error: (err) => {
         console.error('Registration error:', err);
-        this.error = err.error?.message || err.error || 'Registration failed. Please try again.';
+        if (err.error) {
+          if (typeof err.error === 'string') {
+            this.error = err.error;
+          } else if (typeof err.error === 'object') {
+            this.error = err.error.error || err.error.message || JSON.stringify(err.error);
+          } else {
+            this.error = JSON.stringify(err.error);
+          }
+        } else {
+          this.error = err.message || 'Registration failed. Please try again.';
+        }
         this.isLoading = false;
       }
     });
