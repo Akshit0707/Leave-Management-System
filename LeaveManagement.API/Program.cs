@@ -138,7 +138,9 @@ string GetConnectionString(WebApplicationBuilder builder)
 {
     var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
     if (string.IsNullOrEmpty(databaseUrl))
+#pragma warning disable CS8603 // Possible null reference return.
         return builder.Configuration.GetConnectionString("DefaultConnection");
+#pragma warning restore CS8603 // Possible null reference return.
 
     // If it's already in ADO.NET format, just return it
     if (databaseUrl.Contains("Host="))

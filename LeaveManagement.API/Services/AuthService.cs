@@ -109,13 +109,14 @@ public class AuthService : IAuthService
             expires: DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:ExpiresMinutes"] ?? "60")),
             signingCredentials: creds);
 
+        // Always return role as string ("Manager" or "Employee")
         return new AuthResponse
         {
             UserId = user.Id,
             Email = user.Email,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Role = user.Role,
+            Role = user.Role.ToString(),
             Token = new JwtSecurityTokenHandler().WriteToken(token)
         };
     }
