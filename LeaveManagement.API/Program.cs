@@ -61,14 +61,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString =
-        builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? builder.Configuration["DATABASE_URL"];
+        builder.Configuration["DATABASE_URL"]
+        ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
+    // HARD FAIL if missing (correct behaviour)
     if (string.IsNullOrWhiteSpace(connectionString))
-    {
-        Console.WriteLine("❌ DATABASE CONNECTION STRING NOT FOUND");
-        return; // Safe: app starts but DB is unavailable
-    }
+        throw new InvalidOperationException("DATABASE_URL is not configured");
 
     options.UseNpgsql(connectionString);
 });
@@ -107,16 +105,9 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-    if (db.Database.ProviderName != null)
-    {
-        db.Database.Migrate();
-    }
-    else
-    {
-        Console.WriteLine("⚠️ Skipping migrations — no DB provider configured");
-    }
+    db.Database.Migrate();
 }
+
 
 
 /* =======================
