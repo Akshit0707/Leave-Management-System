@@ -140,22 +140,19 @@ string GetConnectionString()
     if (string.IsNullOrEmpty(databaseUrl))
         return builder.Configuration.GetConnectionString("DefaultConnection");
 
-    // If it's already in ADO.NET format, just return it
     if (databaseUrl.Contains("Host="))
         return databaseUrl;
 
-    // Otherwise, parse the URL format
     var uri = new Uri(databaseUrl);
     var userInfo = uri.UserInfo.Split(':');
-    var builder = new Npgsql.NpgsqlConnectionStringBuilder
+    var csBuilder = new Npgsql.NpgsqlConnectionStringBuilder
     {
         Host = uri.Host,
         Port = uri.Port,
         Username = userInfo[0],
         Password = userInfo[1],
         Database = uri.AbsolutePath.TrimStart('/'),
-        SslMode = Npgsql.SslMode.Prefer,
-        TrustServerCertificate = true
+        SslMode = Npgsql.SslMode.Prefer
     };
-    return builder.ToString();
+    return csBuilder.ToString();
 }
