@@ -6,29 +6,28 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-// PostgreSQL timestamp fix
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
 /* =======================
-   RAILWAY PORT CONFIG
+   RAILWAY PORT
 ======================= */
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-builder.WebHost.ConfigureKestrel(options =>
+builder.WebHost.ConfigureKestrel(o =>
 {
-    options.ListenAnyIP(int.Parse(port));
+    o.ListenAnyIP(int.Parse(port));
 });
 
 /* =======================
-   CONFIGURATION
+   CONFIG
 ======================= */
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false)
     .AddEnvironmentVariables();
 
 /* =======================
-   CORS (STRICT & CORRECT)
+   CORS (STRICT)
 ======================= */
 var allowedOrigins = builder.Configuration["AllowedOrigins"]
     ?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -49,50 +48,34 @@ builder.Services.AddCors(options =>
 /* =======================
    SERVICES
 ======================= */
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-    });
-
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Leave Management API",
-        Version = "v1"
-    });
-});
+builder.Services.AddSwaggerGen();
 
-/* =======================
-   DATABASE (POSTGRESQL)
-======================= */
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    )
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 
 /* =======================
-   JWT AUTH
+   JWT
 ======================= */
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? throw new InvalidOperationException("JWT Key missing");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    .AddJwtBearer(o =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        o.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey =
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey)
+            ),
             ClockSkew = TimeSpan.Zero
         };
     });
@@ -102,15 +85,23 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 /* =======================
-   HTTP PIPELINE (ORDER MATTERS)
+   PIPELINE (CRITICAL)
 ======================= */
 app.UseSwagger();
 app.UseSwaggerUI();
 
-/* 🔴 REQUIRED FOR CORS PREFLIGHT */
-app.UseRouting();
+/* 🔴 HARD FIX: HANDLE OPTIONS BEFORE ROUTING */
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == HttpMethods.Options)
+    {
+        context.Response.StatusCode = StatusCodes.Status204NoContent;
+        return;
+    }
+    await next();
+});
 
-/* 🔴 MUST BE AFTER ROUTING */
+app.UseRouting();
 app.UseCors("AllowAngularApp");
 
 app.UseAuthentication();
@@ -118,28 +109,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-/* =======================
-   HEALTH CHECK
-======================= */
-app.MapGet("/health", () =>
-    Results.Ok(new { status = "healthy", time = DateTime.UtcNow }));
+app.MapGet("/health", () => Results.Ok("Healthy"));
 
-/* =======================
-   DATABASE INIT (TEMP)
-======================= */
-try
-{
-    using var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    Console.WriteLine("Ensuring database exists...");
-    db.Database.EnsureCreated(); // replace with Migrate() later
-    Console.WriteLine("Database ready");
-}
-catch (Exception ex)
-{
-    Console.WriteLine("DATABASE ERROR:");
-    Console.WriteLine(ex.Message);
-}
-
-Console.WriteLine($"Application started on port {port}");
 app.Run();
