@@ -64,12 +64,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration["DATABASE_URL"]
         ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-    // HARD FAIL if missing (correct behaviour)
     if (string.IsNullOrWhiteSpace(connectionString))
         throw new InvalidOperationException("DATABASE_URL is not configured");
 
     options.UseNpgsql(connectionString);
 });
+
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ILeaveService, LeaveService>();
@@ -107,6 +107,7 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
+
 
 
 
