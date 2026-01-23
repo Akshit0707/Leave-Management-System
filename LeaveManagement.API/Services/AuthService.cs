@@ -27,7 +27,15 @@ public class AuthService : IAuthService
         try
         {
             if (request == null)
-                throw new ArgumentNullException(nameof(request));
+                throw new ArgumentNullException(nameof(request), "Request body cannot be null.");
+            if (string.IsNullOrWhiteSpace(request.Email))
+                throw new ArgumentException("Email is required.");
+            if (string.IsNullOrWhiteSpace(request.Password))
+                throw new ArgumentException("Password is required.");
+            if (string.IsNullOrWhiteSpace(request.FirstName))
+                throw new ArgumentException("First name is required.");
+            if (string.IsNullOrWhiteSpace(request.LastName))
+                throw new ArgumentException("Last name is required.");
             // Validate email doesn't exist
             if (await _db.Users.AnyAsync(u => u.Email == request.Email))
                 return null;
