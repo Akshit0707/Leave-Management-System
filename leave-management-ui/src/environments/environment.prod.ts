@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://leave-management-system.railway.internal:8080'
+  apiUrl: 'https://leave-mgmt-api.up.railway.app'
 };
