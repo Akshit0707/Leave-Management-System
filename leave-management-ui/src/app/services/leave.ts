@@ -1,17 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LeaveService {
-  private apiUrl = 'http://localhost:5296/api/leaves';
+
+  private apiUrl = `${environment.apiUrl}/api/leaves`;
 
   constructor(private http: HttpClient) {}
 
-  createLeave(startDate: string, endDate: string, reason: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, { 
+  createLeave(
+    startDate: string,
+    endDate: string,
+    reason: string
+  ): Observable<any> {
+    return this.http.post(this.apiUrl, {
       StartDate: startDate,
       EndDate: endDate,
       Reason: reason
@@ -26,8 +32,12 @@ export class LeaveService {
     return this.http.get<any[]>(`${this.apiUrl}/pending`);
   }
 
-  updateLeaveStatus(id: number, status: number, managerComments: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}/status`, { 
+  updateLeaveStatus(
+    id: number,
+    status: number,
+    managerComments: string
+  ): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}/status`, {
       Status: status,
       ManagerComments: managerComments
     });
