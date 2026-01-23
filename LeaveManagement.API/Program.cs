@@ -70,27 +70,7 @@ builder.Services.AddSwaggerGen();
    DATABASE (RAILWAY SAFE)
 ======================= */
 builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-    if (!string.IsNullOrEmpty(databaseUrl))
-    {
-        // Parse as URI and convert to connection string
-        // Convert Railway URL → Npgsql connection string
-        var uri = new Uri(databaseUrl);
-        var userInfo = uri.UserInfo.Split(':');
-
-        var connectionString =
-            $"Host={uri.Host};" +
-            $"Port={uri.Port};" +
-            $"Database={uri.AbsolutePath.TrimStart('/')};" +
-            $"Username={userInfo[0]};" +
-            $"Password={userInfo[1]};" +
-            $"SSL Mode=Require;Trust Server Certificate=true";
-
-        options.UseNpgsql(connectionString);
-    }
-});
-
+    options.UseNpgsql(GetConnectionString()));
 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -150,3 +130,32 @@ app.MapControllers();
 app.MapGet("/health", () => Results.Ok("Healthy"));
 
 app.Run();
+
+/* =======================
+   HELPER METHODS
+======================= */
+string GetConnectionString()
+{
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+    if (string.IsNullOrEmpty(databaseUrl))
+        return builder.Configuration.GetConnectionString("DefaultConnection");
+
+    // If it's already in ADO.NET format, just return it
+    if (databaseUrl.Contains("Host="))
+        return databaseUrl;
+
+    // Otherwise, parse the URL format
+    var uri = new Uri(databaseUrl);
+    var userInfo = uri.UserInfo.Split(':');
+    var builder = new Npgsql.NpgsqlConnectionStringBuilder
+    {
+        Host = uri.Host,
+        Port = uri.Port,
+        Username = userInfo[0],
+        Password = userInfo[1],
+        Database = uri.AbsolutePath.TrimStart('/'),
+        SslMode = Npgsql.SslMode.Prefer,
+        TrustServerCertificate = true
+    };
+    return builder.ToString();
+}
