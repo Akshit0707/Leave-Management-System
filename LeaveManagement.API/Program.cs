@@ -12,7 +12,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var builder = WebApplication.CreateBuilder(args);
 
 /* =======================
-   Railway PORT CONFIG
+   RAILWAY PORT CONFIG
 ======================= */
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.ConfigureKestrel(options =>
@@ -28,32 +28,21 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 /* =======================
-   CORS CONFIG
+   CORS (STRICT & CORRECT)
 ======================= */
 var allowedOrigins = builder.Configuration["AllowedOrigins"]
     ?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-    ?? Array.Empty<string>();
-
-Console.WriteLine("AllowedOrigins: " + string.Join(" | ", allowedOrigins));
+    ?? throw new InvalidOperationException("AllowedOrigins not configured");
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        if (allowedOrigins.Length > 0)
-        {
-            policy.WithOrigins(allowedOrigins)
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
-        }
-        else
-        {
-            // Temporary fallback (remove later)
-            policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        }
+        policy
+            .WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -77,7 +66,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 /* =======================
-   DATABASE (PostgreSQL)
+   DATABASE (POSTGRESQL)
 ======================= */
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
@@ -113,11 +102,15 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 /* =======================
-   PIPELINE
+   HTTP PIPELINE (ORDER MATTERS)
 ======================= */
 app.UseSwagger();
 app.UseSwaggerUI();
 
+/* 🔴 REQUIRED FOR CORS PREFLIGHT */
+app.UseRouting();
+
+/* 🔴 MUST BE AFTER ROUTING */
 app.UseCors("AllowAngularApp");
 
 app.UseAuthentication();
@@ -139,7 +132,7 @@ try
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     Console.WriteLine("Ensuring database exists...");
-    db.Database.EnsureCreated(); // Replace with Migrate() later
+    db.Database.EnsureCreated(); // replace with Migrate() later
     Console.WriteLine("Database ready");
 }
 catch (Exception ex)
