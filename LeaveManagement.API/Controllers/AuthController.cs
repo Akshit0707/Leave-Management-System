@@ -20,8 +20,13 @@ public class AuthController : ControllerBase
     {
         try
         {
+            if (request == null)
+            {
+                Console.WriteLine("Register failed: request body is null");
+                return BadRequest("Request body cannot be null.");
+            }
             Console.WriteLine("=== Register attempt ===");
-            Console.WriteLine($"Email: {request?.Email}, Role: {request?.Role}, ManagerId: {request?.ManagerId}");
+            Console.WriteLine($"Email: {request.Email}, Role: {request.Role}, ManagerId: {request.ManagerId}");
             var response = await _auth.RegisterAsync(request);
             if (response == null)
             {
@@ -45,7 +50,12 @@ public class AuthController : ControllerBase
     {
         try
         {
-            Console.WriteLine($"=== Login attempt === {request?.Email}");
+            if (request == null)
+            {
+                Console.WriteLine("Login failed: request body is null");
+                return BadRequest("Request body cannot be null.");
+            }
+            Console.WriteLine($"=== Login attempt === {request.Email}");
             var response = await _auth.LoginAsync(request);
             if (response == null)
             {
