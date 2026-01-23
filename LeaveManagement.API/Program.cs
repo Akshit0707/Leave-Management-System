@@ -5,16 +5,31 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-// Enable legacy timestamp behavior for Npgsql (PostgreSQL)
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add CORS
-var allowedOrigins = builder.Configuration["AllowedOrigins"]?.Split(',')
-    .Select(o => o.Trim())
-    .Where(o => !string.IsNullOrWhiteSpace(o))
-    .ToArray() ?? Array.Empty<string>();
+/* =======================
+   Railway PORT FIX
+======================= */
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(int.Parse(port));
+});
+
+/* =======================
+   Configuration
+======================= */
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false)
+    .AddEnvironmentVariables();
+
+/* =======================
+   CORS CONFIG
+======================= */
+var allowedOrigins = builder.Configuration["AllowedOrigins"]
+    ?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    ?? Array.Empty<string>();
 
 Console.WriteLine("AllowedOrigins: " + string.Join(" | ", allowedOrigins));
 
@@ -31,7 +46,7 @@ builder.Services.AddCors(options =>
         }
         else
         {
-            // Fallback: allow any origin (for emergency production unblock)
+            // SAFE fallback (no credentials)
             policy.AllowAnyOrigin()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
@@ -39,25 +54,37 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add services to the container.
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Leave Management API", Version = "v1" });
-});
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// If you previously had .EnableLegacyTimestampBehavior() here, it has been removed as it is not a valid method.
+/* =======================
+   SERVICES
+======================= */
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Leave Management API",
+        Version = "v1"
+    });
+});
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 
-var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key missing");
+/* =======================
+   JWT AUTH
+======================= */
+var jwtKey = builder.Configuration["Jwt:Key"]
+    ?? throw new InvalidOperationException("JWT Key missing");
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -66,48 +93,51 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            IssuerSigningKey =
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             ClockSkew = TimeSpan.Zero
         };
     });
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+/* =======================
+   PIPELINE
+======================= */
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Use CORS - MUST be before UseAuthentication and UseAuthorization
 app.UseCors("AllowAngularApp");
-
-// Add a simple health check endpoint
-app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
-
-// Remove UseHttpsRedirection for Railway deployment
-// app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+/* =======================
+   HEALTH CHECK
+======================= */
+app.MapGet("/health", () =>
+    Results.Ok(new { status = "healthy", time = DateTime.UtcNow }));
+
+/* =======================
+   DATABASE INIT (TEMP)
+======================= */
 try
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        Console.WriteLine("=== Ensuring Database Created ===");
-        db.Database.EnsureCreated();
-        Console.WriteLine("=== Database Ready ===");
-    }
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    Console.WriteLine("Ensuring database exists...");
+    db.Database.EnsureCreated();
+    Console.WriteLine("Database ready");
 }
 catch (Exception ex)
 {
-    Console.WriteLine($"=== DATABASE ERROR: {ex.Message} ===");
-    Console.WriteLine($"Stack: {ex.StackTrace}");
+    Console.WriteLine("DATABASE ERROR:");
+    Console.WriteLine(ex.Message);
 }
 
-Console.WriteLine("AllowedOrigins: " + string.Join(" | ", allowedOrigins));
-Console.WriteLine("=== Application Started Successfully ===");
+Console.WriteLine("Application started on port " + port);
 app.Run();
