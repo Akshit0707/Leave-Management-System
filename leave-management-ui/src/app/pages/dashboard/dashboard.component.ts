@@ -78,7 +78,25 @@ export class DashboardComponent implements OnInit {
 
     if (this.isManager) {
       this.loadManagerRequests();
+    } else {
+      this.loadEmployeeRequests();
     }
+  }
+
+  loadEmployeeRequests(): void {
+    this.requestsLoading = true;
+    this.leaveService.getMyLeaves().subscribe({
+      next: (leaves: any[]) => {
+        this.pastDataSource.data = leaves;
+        this.pastDataSource.paginator = this.pastPaginator;
+        this.pastDataSource.sort = this.sort;
+        this.requestsLoading = false;
+      },
+      error: () => {
+        this.requestsError = 'Failed to load your leave requests';
+        this.requestsLoading = false;
+      }
+    });
   }
 
   loadSummary(): void {
