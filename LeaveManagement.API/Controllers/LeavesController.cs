@@ -1,42 +1,10 @@
 
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Security.Claims;
-    using LeaveManagement.API.DTOs;
-    using LeaveManagement.API.Services;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-
-    namespace LeaveManagement.API.Controllers;
-
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize]
-    public class LeavesController : ControllerBase
-    {
-        private readonly ILeaveService _service;
-
-        public LeavesController(ILeaveService service)
-        {
-            _service = service;
-        }
-
-        [Authorize(Roles = "Manager")]
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            try
-            {
-                var result = await _service.GetAllAsync();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error fetching all leaves: {ex.Message}");
-                return StatusCode(500, new { error = ex.Message });
-            }
-        }
-
-        // ...existing code...
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using LeaveManagement.API.DTOs;
+using LeaveManagement.API.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LeaveManagement.API.Controllers;
 
@@ -51,6 +19,24 @@ public class LeavesController : ControllerBase
     {
         _service = service;
     }
+
+    [Authorize(Roles = "Manager")]
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        try
+        {
+            var result = await _service.GetAllAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching all leaves: {ex.Message}");
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+    // ...existing code...
 
     private int GetUserId()
     {
