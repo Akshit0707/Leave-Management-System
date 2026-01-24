@@ -6,9 +6,9 @@ A full-stack leave management system for organizations, built with **ASP.NET Cor
 
 ## 🚀 Live Demo
 
-- **Frontend (Netlify):** [https://leavemgmtsy.netlify.app](https://leavemgmtsy.netlify.app)
-- **Backend (Railway):** _[Your Railway backend URL here]_  
-  (Replace with your actual Railway backend URL)
+- **Frontend (Netlify):** "https://leavems.netlify.app"
+- **Backend (Railway):** " https://leave-management-system.up.railway.app " 
+  
 
 ---
 
