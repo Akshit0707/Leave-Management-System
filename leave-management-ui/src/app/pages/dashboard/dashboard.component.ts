@@ -84,7 +84,8 @@
             next: (all) => {
               console.log('All leaves:', all);
               this.allRequests = all;
-              this.pastRequests = all.filter(req => req.status !== 'Pending');
+              // Fix: status is lowercase in API, so compare lowercase
+              this.pastRequests = all.filter(req => req.status.toLowerCase() !== 'pending');
               this.requestsLoading = false;
             },
             error: (err) => {
