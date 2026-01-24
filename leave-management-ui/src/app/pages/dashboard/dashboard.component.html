@@ -16,14 +16,13 @@
     </div>
     <div *ngIf="!isLoading" class="dashboard-stats-grid">
       <div class="dashboard-stat-card" *ngFor="let stat of [
-        { label: 'Total Requests', value: summary.totalRequests, icon: 'assignment', color: 'primary' },
-        { label: 'Approved', value: summary.approvedRequests, icon: 'check_circle', color: 'primary' },
-        { label: 'Pending', value: summary.pendingRequests, icon: 'hourglass_empty', color: 'primary' },
-        { label: 'Rejected', value: summary.rejectedRequests, icon: 'cancel', color: 'warn' },
-        { label: 'Days Requested', value: summary.totalDaysRequested, icon: 'event', color: 'accent' },
-        { label: 'Days Approved', value: summary.totalDaysApproved, icon: 'event_available', color: 'accent' }
+        { label: 'Total Requests', value: summary.totalRequests },
+        { label: 'Approved', value: summary.approvedRequests },
+        { label: 'Pending', value: summary.pendingRequests },
+        { label: 'Rejected', value: summary.rejectedRequests },
+        { label: 'Days Requested', value: summary.totalDaysRequested },
+        { label: 'Days Approved', value: summary.totalDaysApproved }
       ]">
-        <mat-icon [color]="stat.color" class="dashboard-stat-icon">{{ stat.icon }}</mat-icon>
         <div class="dashboard-stat-label">{{ stat.label }}</div>
         <div class="dashboard-stat-value">{{ stat.value }}</div>
       </div>
