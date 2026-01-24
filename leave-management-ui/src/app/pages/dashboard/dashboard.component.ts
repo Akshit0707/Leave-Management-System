@@ -46,6 +46,7 @@
     pendingRequests: any[] = [];
     allRequests: any[] = [];
     requestsLoading: boolean = true;
+    requestsError: string | null = null;
 
     constructor(private leaveService: LeaveService, private authService: Auth) {}
 
@@ -73,6 +74,7 @@
 
     loadManagerRequests() {
       this.requestsLoading = true;
+      this.requestsError = null;
       this.leaveService.getPendingLeaves().subscribe({
         next: (pending) => {
           this.pendingRequests = pending;
@@ -81,12 +83,14 @@
               this.allRequests = all;
               this.requestsLoading = false;
             },
-            error: () => {
+            error: (err) => {
+              this.requestsError = 'Failed to load all leave requests.';
               this.requestsLoading = false;
             }
           });
         },
-        error: () => {
+        error: (err) => {
+          this.requestsError = 'Failed to load pending leave requests.';
           this.requestsLoading = false;
         }
       });
