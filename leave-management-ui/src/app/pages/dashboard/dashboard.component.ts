@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LeaveService } from '../../services/leave';
 import { Auth } from '../../services/auth';
-import { PendingLeavesComponent } from '../pending-leaves/pending-leaves.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -17,7 +16,6 @@ import { MatDividerModule } from '@angular/material/divider';
   standalone: true,
   imports: [
     CommonModule,
-    PendingLeavesComponent,
     MatToolbarModule,
     MatButtonModule,
     MatCardModule,
