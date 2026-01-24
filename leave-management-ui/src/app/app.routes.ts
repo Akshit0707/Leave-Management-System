@@ -8,10 +8,9 @@ import { PendingLeavesComponent } from './pages/pending-leaves/pending-leaves.co
 import { authGuard } from './services/auth.guard';
 import { managerGuard } from './services/manager.guard';
 import { LoginComponent } from './pages/login/Login.component';
-import { LandingComponent } from './pages/landing/landing.component';
 
-export const routes: Routes = [
-  { path: '', component: LandingComponent },
+
+  { path: '', loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent) },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
