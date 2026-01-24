@@ -79,6 +79,11 @@ export class DashboardComponent implements OnInit {
     if (this.isManager) {
       this.loadManagerRequests();
     } else {
+      // Employee-specific columns (no userName)
+      this.pastColumns = [
+        'id', 'dates', 'days', 'reason', 'status',
+        'managerComments', 'createdAt', 'reviewedAt'
+      ];
       this.loadEmployeeRequests();
     }
   }
