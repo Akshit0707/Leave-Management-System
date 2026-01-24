@@ -1,3 +1,11 @@
+    public async Task<IEnumerable<LeaveRequestDto>> GetAllAsync()
+    {
+        var items = await _db.LeaveRequests
+            .Include(l => l.User)
+            .OrderByDescending(l => l.CreatedAt)
+            .ToListAsync();
+        return items.Select(MapToDto);
+    }
 using LeaveManagement.API.Data;
 using LeaveManagement.API.DTOs;
 using LeaveManagement.API.Models;
