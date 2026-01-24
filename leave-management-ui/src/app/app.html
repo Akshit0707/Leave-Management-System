@@ -1,23 +1,25 @@
-<nav class="navbar">
-  <div class="navbar-container">
-    <h1 class="navbar-title">Leave Management System</h1>
-    <div class="navbar-links" *ngIf="authService.isAuthenticated()">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="exactOptions">Dashboard</a>
-      
-      <div *ngIf="!isManager()" class="employee-nav-links">
-        <a routerLink="/create-leave" routerLinkActive="active">
-          <span class="nav-icon">📝</span> Request Leave
-        </a>
-        <a routerLink="/my-leaves" routerLinkActive="active">
-          <span class="nav-icon">📋</span> My Leaves
-        </a>
+<ng-container *ngIf="authService.isAuthenticated() && !isLandingPage(); else landingHeader">
+  <nav class="navbar">
+    <div class="navbar-container">
+      <h1 class="navbar-title">Leave Management System</h1>
+      <div class="navbar-links">
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="exactOptions">Dashboard</a>
+        <div *ngIf="!isManager()" class="employee-nav-links">
+          <a routerLink="/create-leave" routerLinkActive="active">
+            <span class="nav-icon">📝</span> Request Leave
+          </a>
+          <a routerLink="/my-leaves" routerLinkActive="active">
+            <span class="nav-icon">📋</span> My Leaves
+          </a>
+        </div>
+        <button class="logout-btn" (click)="logout()">Logout</button>
       </div>
-
-      <button class="logout-btn" (click)="logout()">Logout</button>
     </div>
-  </div>
-</nav>
-
+  </nav>
+</ng-container>
+<ng-template #landingHeader>
+  <!-- Optionally, add a minimal header or logo for landing/login/register -->
+</ng-template>
 <main class="main-content">
   <router-outlet></router-outlet>
 </main>

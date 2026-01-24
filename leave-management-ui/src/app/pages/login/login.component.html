@@ -30,12 +30,12 @@
 
       <div *ngIf="error" class="error-message">{{ error }}</div>
 
-      <button type="submit" [disabled]="isLoading" class="login-btn">
+      <button type="submit" [disabled]="isLoading" class="login-btn btn">
         {{ isLoading ? 'Logging in...' : 'Login' }}
       </button>
 
       <div class="register-link">
-        Don't have an account? <a routerLink="/register">Register here</a>
+        Don't have an account? <a routerLink="/register" class="register-btn btn" style="margin-left: 0.5rem;">Register</a>
       </div>
     </form>
   </div>

@@ -23,4 +23,9 @@ export class App {
   isManager() {
     return this.authService.isManager();
   }
+  
+  isLandingPage() {
+    const url = this.router.url;
+    return url === '/' || url.startsWith('/login') || url.startsWith('/register');
+  }
 }
