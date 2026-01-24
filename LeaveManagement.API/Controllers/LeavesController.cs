@@ -1,24 +1,42 @@
-    [Authorize(Roles = "Manager")]
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
+    using LeaveManagement.API.DTOs;
+    using LeaveManagement.API.Services;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+
+    namespace LeaveManagement.API.Controllers;
+
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
+    public class LeavesController : ControllerBase
     {
-        try
+        private readonly ILeaveService _service;
+
+        public LeavesController(ILeaveService service)
         {
-            var result = await _service.GetAllAsync();
-            return Ok(result);
+            _service = service;
         }
-        catch (Exception ex)
+
+        [Authorize(Roles = "Manager")]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            Console.WriteLine($"Error fetching all leaves: {ex.Message}");
-            return StatusCode(500, new { error = ex.Message });
+            try
+            {
+                var result = await _service.GetAllAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching all leaves: {ex.Message}");
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
-    }
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using LeaveManagement.API.DTOs;
-using LeaveManagement.API.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+
+        // ...existing code...
 
 namespace LeaveManagement.API.Controllers;
 
