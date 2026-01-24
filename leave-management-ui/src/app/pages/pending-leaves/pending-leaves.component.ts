@@ -11,21 +11,24 @@ import { LeaveService } from '../../services/leave';
   styleUrl: './pending-leaves.component.css'
 })
 export class PendingLeavesComponent implements OnInit {
+
   leaves: any[] = [];
-  isLoading: boolean = true;
+  isLoading = true;
+
   selectedLeave: any = null;
   actionType: 'approve' | 'reject' | null = null;
-  managerComment: string = '';
-  isSubmitting: boolean = false;
-  successMessage: string = '';
+  managerComment = '';
+
+  isSubmitting = false;
+  successMessage = '';
 
   constructor(private leaveService: LeaveService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadPendingLeaves();
   }
 
-  loadPendingLeaves() {
+  loadPendingLeaves(): void {
     this.isLoading = true;
     this.leaveService.getPendingLeaves().subscribe({
       next: (data) => {
@@ -38,60 +41,70 @@ export class PendingLeavesComponent implements OnInit {
     });
   }
 
-  openApproveDialog(leave: any) {
+  openApproveDialog(leave: any): void {
     this.selectedLeave = leave;
     this.actionType = 'approve';
     this.managerComment = '';
   }
 
-  openRejectDialog(leave: any) {
+  openRejectDialog(leave: any): void {
     this.selectedLeave = leave;
     this.actionType = 'reject';
     this.managerComment = '';
   }
 
-  approve() {
-    this.submitAction(1, this.managerComment);
+  approve(): void {
+    this.submitAction('Approved', this.managerComment);
   }
 
-  reject() {
+  reject(): void {
     if (!this.managerComment.trim()) {
       alert('Please provide a reason for rejection');
       return;
     }
-    this.submitAction(2, this.managerComment);
+    this.submitAction('Rejected', this.managerComment);
   }
 
-  submitAction(status: number, comment: string) {
+  submitAction(status: 'Approved' | 'Rejected', comment: string): void {
     if (!this.selectedLeave) return;
 
     this.isSubmitting = true;
-    this.leaveService.updateLeaveStatus(this.selectedLeave.id, status, comment).subscribe({
-      next: () => {
-        this.successMessage = status === 1 ? 'Leave approved successfully!' : 'Leave rejected successfully!';
-        setTimeout(() => {
-          this.successMessage = '';
-          this.closeDialog();
-          this.loadPendingLeaves();
-        }, 2000);
-      },
-      error: () => {
-        alert('Failed to update leave status');
-        this.isSubmitting = false;
-      }
-    });
+
+    this.leaveService
+      .updateLeaveStatus(this.selectedLeave.id, status, comment)
+      .subscribe({
+        next: () => {
+          this.successMessage =
+            status === 'Approved'
+              ? 'Leave approved successfully!'
+              : 'Leave rejected successfully!';
+
+          setTimeout(() => {
+            this.successMessage = '';
+            this.closeDialog();
+            this.loadPendingLeaves();
+          }, 2000);
+        },
+        error: () => {
+          alert('Failed to update leave status');
+          this.isSubmitting = false;
+        }
+      });
   }
 
-  closeDialog() {
+  closeDialog(): void {
     this.selectedLeave = null;
     this.actionType = null;
     this.managerComment = '';
     this.isSubmitting = false;
   }
 
+  // Optional helper if needed elsewhere
   getDaysCount(startDate: string, endDate: string): number {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    return Math.ceil(
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+    ) + 1;
   }
 }
