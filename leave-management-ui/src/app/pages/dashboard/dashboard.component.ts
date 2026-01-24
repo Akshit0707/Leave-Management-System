@@ -77,9 +77,11 @@
       this.requestsError = null;
       this.leaveService.getPendingLeaves().subscribe({
         next: (pending) => {
+          console.log('Pending leaves:', pending);
           this.pendingRequests = pending;
           this.leaveService.getAllLeaves().subscribe({
             next: (all) => {
+              console.log('All leaves:', all);
               this.allRequests = all;
               this.requestsLoading = false;
             },
