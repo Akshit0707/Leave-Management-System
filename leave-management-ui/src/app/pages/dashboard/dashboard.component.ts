@@ -137,12 +137,19 @@ export class DashboardComponent implements OnInit {
   private updateStatus(req: any, status: 'Approved' | 'Rejected'): void {
     this.leaveService.updateLeaveStatus(req.id, status, req._comment || '').subscribe({
       next: () => {
-        this.snackBar.open(`Leave ${status}`, 'OK', { duration: 3000 });
+        this.snackBar.open(
+          `Leave ${status}`,
+          'OK',
+          {
+            duration: 3000,
+            panelClass: status === 'Approved' ? 'snackbar-success' : 'snackbar-error'
+          }
+        );
         this.loadManagerRequests();
         this.loadSummary();
       },
       error: () => {
-        this.snackBar.open('Action failed', 'Close', { duration: 3000 });
+        this.snackBar.open('Action failed', 'Close', { duration: 3000, panelClass: 'snackbar-error' });
       }
     });
   }

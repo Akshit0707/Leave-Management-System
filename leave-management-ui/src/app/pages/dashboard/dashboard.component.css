@@ -1,3 +1,18 @@
+/* Custom snackbar styles for success and error */
+.snackbar-success {
+  background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%) !important;
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 8px;
+}
+.snackbar-error {
+  background: linear-gradient(90deg, #f87171 0%, #ef4444 100%) !important;
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 8px;
+}
 .approve-btn, .reject-btn {
   width: 110px !important;
   height: 40px !important;
