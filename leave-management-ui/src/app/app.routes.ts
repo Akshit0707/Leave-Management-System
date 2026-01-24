@@ -10,6 +10,7 @@ import { managerGuard } from './services/manager.guard';
 import { LoginComponent } from './pages/login/Login.component';
 
 
+export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent) },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
