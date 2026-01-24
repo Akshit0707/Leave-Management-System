@@ -1,3 +1,118 @@
+/* Main dashboard container */
+.dashboard-main-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 16px;
+  background: #f8fafc;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+}
+
+.dashboard-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px 24px;
+  margin-top: 24px;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.dashboard-welcome {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.dashboard-title {
+  margin-bottom: 24px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.dashboard-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.dashboard-stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.dashboard-stat-card {
+  background: #f1f5f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  min-width: 180px;
+  max-width: 220px;
+  flex: 1 1 180px;
+  padding: 18px 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.dashboard-stat-icon {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.dashboard-stat-label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #2c3e50;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.dashboard-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+@media (max-width: 768px) {
+  .dashboard-main-container {
+    padding: 16px 4px;
+  }
+  .dashboard-content {
+    padding: 16px 8px;
+  }
+  .dashboard-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .dashboard-stats-grid {
+    gap: 12px;
+  }
+  .dashboard-stat-card {
+    min-width: 140px;
+    max-width: 180px;
+    padding: 12px 6px;
+  }
+  .dashboard-stat-icon {
+    font-size: 1.4rem;
+  }
+  .dashboard-stat-value {
+    font-size: 1.3rem;
+  }
+}
 .dashboard-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f6f8 0%, #ecf0f1 100%);

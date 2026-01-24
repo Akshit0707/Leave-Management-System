@@ -1,111 +1,32 @@
 
 
 
-<div style="max-width: 900px; margin: 0 auto; padding: 32px 16px; background: #f8fafc; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.07);">
-  <div style="display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; margin-bottom: 32px;">
-    <mat-card class="mat-elevation-z2" style="flex: 1 1 320px; min-width: 280px; max-width: 350px; text-align:center;">
-      <mat-card-title style="font-size: 1.15rem; font-weight: 600; margin-bottom: 12px;">Quick Actions</mat-card-title>
-      <mat-card-content>
-        <div style="display: flex; flex-direction: column; gap: 14px; align-items: center;">
-          <button mat-raised-button color="primary" routerLink="/create-leave" *ngIf="!isManager">Request Leave</button>
-          <button mat-raised-button color="accent" routerLink="/my-leaves" *ngIf="!isManager">View My Leaves</button>
-          <button mat-raised-button color="primary" routerLink="/pending-leaves" *ngIf="isManager">Review Pending Leaves</button>
-          <button mat-raised-button color="accent" routerLink="/dashboard">Refresh Dashboard</button>
-        </div>
-      </mat-card-content>
-    </mat-card>
-    <mat-card class="mat-elevation-z2" style="flex: 1 1 320px; min-width: 280px; max-width: 350px; text-align:center;">
-      <mat-card-title style="font-size: 1.15rem; font-weight: 600; margin-bottom: 12px;">Recent Activity</mat-card-title>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item *ngIf="isManager">
-            <mat-icon matListIcon color="primary">supervisor_account</mat-icon>
-            <div matLine style="font-weight:500;">Reviewed leave requests</div>
-            <div matLine class="mat-caption">Today, 10:00 AM</div>
-          </mat-list-item>
-          <mat-list-item *ngIf="!isManager">
-            <mat-icon matListIcon color="primary">event_note</mat-icon>
-            <div matLine style="font-weight:500;">Requested leave for next week</div>
-            <div matLine class="mat-caption">Yesterday, 4:30 PM</div>
-          </mat-list-item>
-          <mat-list-item>
-            <mat-icon matListIcon color="accent">update</mat-icon>
-            <div matLine style="font-weight:500;">Dashboard updated</div>
-            <div matLine class="mat-caption">Just now</div>
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
-  </div>
+<div class="dashboard-main-container">
 
-  <mat-card class="mat-elevation-z4" style="margin-top: 24px; padding: 32px 24px; background: #fff;">
-    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; justify-content: center;">
-      <span style="font-size: 1.3rem; font-weight: 700;">Welcome Back, {{ userName }}</span>
-      <span class="role-tag employee" *ngIf="!isManager" style="font-size: 1rem; padding: 6px 16px; background: #22c55e; color: #fff; border-radius: 14px; font-weight: 700;">EMPLOYEE</span>
-      <span class="role-tag manager" *ngIf="isManager" style="font-size: 1rem; padding: 6px 16px; background: #3b82f6; color: #fff; border-radius: 14px; font-weight: 700;">MANAGER</span>
+  <div class="dashboard-content">
+    <div class="dashboard-header">
+      <span class="dashboard-welcome">Welcome Back, {{ userName }}</span>
+      <span class="role-tag employee" *ngIf="!isManager">EMPLOYEE</span>
+      <span class="role-tag manager" *ngIf="isManager">MANAGER</span>
     </div>
-    <mat-card-title style="margin-bottom: 24px; font-size: 1.15rem; font-weight: 600;">Leave Statistics</mat-card-title>
-    <div *ngIf="isLoading" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px;">
+    <h2 class="dashboard-title">Leave Statistics</h2>
+    <div *ngIf="isLoading" class="dashboard-loading">
       <mat-progress-spinner mode="indeterminate" color="primary"></mat-progress-spinner>
-      <p style="margin-top: 16px;">Loading your statistics...</p>
+      <p>Loading your statistics...</p>
     </div>
-    <div *ngIf="!isLoading">
-      <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center;">
-        <mat-card class="stat-card mat-elevation-z1" style="flex: 1 1 150px; min-width: 150px; max-width: 180px; text-align:center; padding: 16px 6px; background: #f1f5f9;">
-          <mat-card-header style="justify-content: center;">
-            <mat-icon color="primary">assignment</mat-icon>
-            <span style="margin-left: 8px; font-weight:500;">Total Requests</span>
-          </mat-card-header>
-          <mat-card-content>
-            <h2 style="font-size: 1.7rem; margin: 10px 0 0 0; font-weight:700;">{{ summary.totalRequests }}</h2>
-          </mat-card-content>
-        </mat-card>
-        <mat-card class="stat-card mat-elevation-z1" style="flex: 1 1 150px; min-width: 150px; max-width: 180px; text-align:center; padding: 16px 6px; background: #f1f5f9;">
-          <mat-card-header style="justify-content: center;">
-            <mat-icon color="primary">check_circle</mat-icon>
-            <span style="margin-left: 8px; font-weight:500;">Approved</span>
-          </mat-card-header>
-          <mat-card-content>
-            <h2 style="font-size: 1.7rem; margin: 10px 0 0 0; font-weight:700;">{{ summary.approvedRequests }}</h2>
-          </mat-card-content>
-        </mat-card>
-        <mat-card class="stat-card mat-elevation-z1" style="flex: 1 1 150px; min-width: 150px; max-width: 180px; text-align:center; padding: 16px 6px; background: #f1f5f9;">
-          <mat-card-header style="justify-content: center;">
-            <mat-icon color="primary">hourglass_empty</mat-icon>
-            <span style="margin-left: 8px; font-weight:500;">Pending</span>
-          </mat-card-header>
-          <mat-card-content>
-            <h2 style="font-size: 1.7rem; margin: 10px 0 0 0; font-weight:700;">{{ summary.pendingRequests }}</h2>
-          </mat-card-content>
-        </mat-card>
-        <mat-card class="stat-card mat-elevation-z1" style="flex: 1 1 150px; min-width: 150px; max-width: 180px; text-align:center; padding: 16px 6px; background: #f1f5f9;">
-          <mat-card-header style="justify-content: center;">
-            <mat-icon color="warn">cancel</mat-icon>
-            <span style="margin-left: 8px; font-weight:500;">Rejected</span>
-          </mat-card-header>
-          <mat-card-content>
-            <h2 style="font-size: 1.7rem; margin: 10px 0 0 0; font-weight:700;">{{ summary.rejectedRequests }}</h2>
-          </mat-card-content>
-        </mat-card>
-        <mat-card class="stat-card mat-elevation-z1" style="flex: 1 1 150px; min-width: 150px; max-width: 180px; text-align:center; padding: 16px 6px; background: #f1f5f9;">
-          <mat-card-header style="justify-content: center;">
-            <mat-icon color="accent">event</mat-icon>
-            <span style="margin-left: 8px; font-weight:500;">Days Requested</span>
-          </mat-card-header>
-          <mat-card-content>
-            <h2 style="font-size: 1.7rem; margin: 10px 0 0 0; font-weight:700;">{{ summary.totalDaysRequested }}</h2>
-          </mat-card-content>
-        </mat-card>
-        <mat-card class="stat-card mat-elevation-z1" style="flex: 1 1 150px; min-width: 150px; max-width: 180px; text-align:center; padding: 16px 6px; background: #f1f5f9;">
-          <mat-card-header style="justify-content: center;">
-            <mat-icon color="accent">event_available</mat-icon>
-            <span style="margin-left: 8px; font-weight:500;">Days Approved</span>
-          </mat-card-header>
-          <mat-card-content>
-            <h2 style="font-size: 1.7rem; margin: 10px 0 0 0; font-weight:700;">{{ summary.totalDaysApproved }}</h2>
-          </mat-card-content>
-        </mat-card>
+    <div *ngIf="!isLoading" class="dashboard-stats-grid">
+      <div class="dashboard-stat-card" *ngFor="let stat of [
+        { label: 'Total Requests', value: summary.totalRequests, icon: 'assignment', color: 'primary' },
+        { label: 'Approved', value: summary.approvedRequests, icon: 'check_circle', color: 'primary' },
+        { label: 'Pending', value: summary.pendingRequests, icon: 'hourglass_empty', color: 'primary' },
+        { label: 'Rejected', value: summary.rejectedRequests, icon: 'cancel', color: 'warn' },
+        { label: 'Days Requested', value: summary.totalDaysRequested, icon: 'event', color: 'accent' },
+        { label: 'Days Approved', value: summary.totalDaysApproved, icon: 'event_available', color: 'accent' }
+      ]">
+        <mat-icon [color]="stat.color" class="dashboard-stat-icon">{{ stat.icon }}</mat-icon>
+        <div class="dashboard-stat-label">{{ stat.label }}</div>
+        <div class="dashboard-stat-value">{{ stat.value }}</div>
       </div>
     </div>
-  </mat-card>
+  </div>
 </div>
