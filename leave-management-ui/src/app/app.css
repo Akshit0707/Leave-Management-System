@@ -58,7 +58,7 @@ body {
   background: #2563eb;
   box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
 }
-  letter-spacing: -0.5px;
+  letter-spacing: 0.5px;
 }
 
 .navbar-links {
