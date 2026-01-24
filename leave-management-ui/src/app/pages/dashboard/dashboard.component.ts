@@ -3,11 +3,30 @@ import { CommonModule } from '@angular/common';
 import { LeaveService } from '../../services/leave';
 import { Auth } from '../../services/auth';
 import { PendingLeavesComponent } from '../pending-leaves/pending-leaves.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, PendingLeavesComponent],
+  imports: [
+    CommonModule,
+    PendingLeavesComponent,
+    MatToolbarModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    MatGridListModule,
+    MatProgressSpinnerModule,
+    MatListModule,
+    MatDividerModule
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
