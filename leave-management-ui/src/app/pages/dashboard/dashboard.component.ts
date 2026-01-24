@@ -45,6 +45,7 @@
 
     pendingRequests: any[] = [];
     allRequests: any[] = [];
+    pastRequests: any[] = [];
     requestsLoading: boolean = true;
     requestsError: string | null = null;
 
@@ -83,6 +84,7 @@
             next: (all) => {
               console.log('All leaves:', all);
               this.allRequests = all;
+              this.pastRequests = all.filter(req => req.status !== 'Pending');
               this.requestsLoading = false;
             },
             error: (err) => {
@@ -98,6 +100,4 @@
       });
     }
 
-    get pastRequests() {
-      return this.allRequests.filter(req => req.status !== 'Pending');
-    }}
+  }
