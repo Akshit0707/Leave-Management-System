@@ -1,3 +1,18 @@
+    [Authorize(Roles = "Manager")]
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        try
+        {
+            var result = await _service.GetAllAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching all leaves: {ex.Message}");
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using LeaveManagement.API.DTOs;
