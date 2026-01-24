@@ -28,8 +28,13 @@ export class LeaveService {
     return this.http.get<any[]>(`${this.apiUrl}/mine`);
   }
 
+
   getPendingLeaves(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/pending`);
+  }
+
+  getAllLeaves(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}`);
   }
 
   updateLeaveStatus(

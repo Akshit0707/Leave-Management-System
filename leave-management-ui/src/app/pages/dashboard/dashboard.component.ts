@@ -44,6 +44,10 @@ export class DashboardComponent implements OnInit {
   isManager: boolean = false;
   userName: string = '';
 
+  pendingRequests: any[] = [];
+  allRequests: any[] = [];
+  requestsLoading: boolean = true;
+
   constructor(private leaveService: LeaveService, private authService: Auth) {}
 
   ngOnInit() {
@@ -51,6 +55,9 @@ export class DashboardComponent implements OnInit {
     const user = this.authService.getUser();
     this.userName = user ? `${user.firstName}` : 'User';
     this.loadSummary();
+    if (this.isManager) {
+      this.loadManagerRequests();
+    }
   }
 
   loadSummary() {
@@ -61,6 +68,27 @@ export class DashboardComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
+      }
+    });
+  }
+
+  loadManagerRequests() {
+    this.requestsLoading = true;
+    this.leaveService.getPendingLeaves().subscribe({
+      next: (pending) => {
+        this.pendingRequests = pending;
+        this.leaveService.getAllLeaves().subscribe({
+          next: (all) => {
+            this.allRequests = all;
+            this.requestsLoading = false;
+          },
+          error: () => {
+            this.requestsLoading = false;
+          }
+        });
+      },
+      error: () => {
+        this.requestsLoading = false;
       }
     });
   }
