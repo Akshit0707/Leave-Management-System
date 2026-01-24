@@ -12,47 +12,53 @@ export class LeaveService {
 
   constructor(private http: HttpClient) {}
 
+  // CREATE LEAVE (Employee)
   createLeave(
     startDate: string,
     endDate: string,
     reason: string
   ): Observable<any> {
-    return this.http.post(this.apiUrl, {
-      StartDate: startDate,
-      EndDate: endDate,
-      Reason: reason
+    return this.http.post<any>(this.apiUrl, {
+      startDate,
+      endDate,
+      reason
     });
   }
 
+  // EMPLOYEE LEAVES
   getMyLeaves(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/mine`);
   }
 
+  // MANAGER - ALL LEAVES
+  getAllLeaves(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
 
+  // MANAGER - PENDING ONLY
   getPendingLeaves(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/pending`);
   }
 
-  getAllLeaves(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`);
-  }
-
+  // MANAGER - UPDATE STATUS
   updateLeaveStatus(
     id: number,
-    status: number,
+    status: string,
     managerComments: string
   ): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}/status`, {
-      Status: status,
-      ManagerComments: managerComments
+    return this.http.put<any>(`${this.apiUrl}/${id}/status`, {
+      status,
+      managerComments
     });
   }
 
+  // DELETE LEAVE
   deleteLeave(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 
+  // DASHBOARD SUMMARY
   getSummary(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/summary`);
+    return this.http.get<any>(`${this.apiUrl}/summary`);
   }
 }

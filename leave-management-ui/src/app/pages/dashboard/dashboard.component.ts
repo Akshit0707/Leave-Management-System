@@ -1,104 +1,106 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { LeaveService } from '../../services/leave';
+import { Auth } from '../../services/auth';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
 
-  import { Component, OnInit } from '@angular/core';
-  import { CommonModule } from '@angular/common';
-  import { LeaveService } from '../../services/leave';
-  import { Auth } from '../../services/auth';
-  import { MatToolbarModule } from '@angular/material/toolbar';
-  import { MatButtonModule } from '@angular/material/button';
-  import { MatCardModule } from '@angular/material/card';
-  import { MatIconModule } from '@angular/material/icon';
-  import { MatGridListModule } from '@angular/material/grid-list';
-  import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-  import { MatListModule } from '@angular/material/list';
-  import { MatDividerModule } from '@angular/material/divider';
+@Component({
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    MatGridListModule,
+    MatProgressSpinnerModule,
+    MatListModule,
+    MatDividerModule
+  ],
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.css'
+})
+export class DashboardComponent implements OnInit {
 
-  @Component({
-    selector: 'app-dashboard',
-    standalone: true,
-    imports: [
-      CommonModule,
-      MatToolbarModule,
-      MatButtonModule,
-      MatCardModule,
-      MatIconModule,
-      MatGridListModule,
-      MatProgressSpinnerModule,
-      MatListModule,
-      MatDividerModule
-    ],
-    templateUrl: './dashboard.component.html',
-    styleUrl: './dashboard.component.css'
-  })
-  export class DashboardComponent implements OnInit {
-    summary: any = {
-      totalRequests: 0,
-      approvedRequests: 0,
-      rejectedRequests: 0,
-      pendingRequests: 0,
-      totalDaysRequested: 0,
-      totalDaysApproved: 0
-    };
+  summary: any = {
+    totalRequests: 0,
+    approvedRequests: 0,
+    rejectedRequests: 0,
+    pendingRequests: 0,
+    totalDaysRequested: 0,
+    totalDaysApproved: 0
+  };
 
-    isLoading: boolean = true;
-    isManager: boolean = false;
-    userName: string = '';
+  isLoading = true;
+  isManager = false;
+  userName = '';
 
-    pendingRequests: any[] = [];
-    allRequests: any[] = [];
-    pastRequests: any[] = [];
-    requestsLoading: boolean = true;
-    requestsError: string | null = null;
+  pendingRequests: any[] = [];
+  pastRequests: any[] = [];
 
-    constructor(private leaveService: LeaveService, private authService: Auth) {}
+  requestsLoading = true;
+  requestsError: string | null = null;
 
-    ngOnInit() {
-      this.isManager = this.authService.isManager();
-      const user = this.authService.getUser();
-      this.userName = user ? `${user.firstName}` : 'User';
-      this.loadSummary();
-      if (this.isManager) {
-        this.loadManagerRequests();
-      }
+  constructor(
+    private leaveService: LeaveService,
+    private authService: Auth
+  ) {}
+
+  ngOnInit(): void {
+    this.isManager = this.authService.isManager();
+    const user = this.authService.getUser();
+    this.userName = user ? user.firstName : 'User';
+
+    this.loadSummary();
+
+    if (this.isManager) {
+      this.loadManagerRequests();
     }
-
-    loadSummary() {
-      this.leaveService.getSummary().subscribe({
-        next: (data) => {
-          this.summary = data;
-          this.isLoading = false;
-        },
-        error: () => {
-          this.isLoading = false;
-        }
-      });
-    }
-
-    loadManagerRequests() {
-      this.requestsLoading = true;
-      this.requestsError = null;
-      this.leaveService.getPendingLeaves().subscribe({
-        next: (pending) => {
-          console.log('Pending leaves:', pending);
-          this.pendingRequests = pending;
-          this.leaveService.getAllLeaves().subscribe({
-            next: (all) => {
-              console.log('All leaves:', all);
-              this.allRequests = all;
-              // Fix: status is lowercase in API, so compare lowercase
-              this.pastRequests = all.filter(req => req.status.toLowerCase() !== 'pending');
-              this.requestsLoading = false;
-            },
-            error: (err) => {
-              this.requestsError = 'Failed to load all leave requests.';
-              this.requestsLoading = false;
-            }
-          });
-        },
-        error: (err) => {
-          this.requestsError = 'Failed to load pending leave requests.';
-          this.requestsLoading = false;
-        }
-      });
-    }
-
   }
+
+  loadSummary(): void {
+    this.leaveService.getSummary().subscribe({
+      next: (data) => {
+        this.summary = data;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      }
+    });
+  }
+loadManagerRequests(): void {
+  this.requestsLoading = true;
+  this.requestsError = null;
+
+  this.leaveService.getAllLeaves().subscribe({
+    next: (allLeaves: any[]) => {
+      console.log('All leaves:', allLeaves);
+
+      // ✅ Backend DTO uses string status: "Pending", "Approved", "Rejected"
+      this.pendingRequests = allLeaves.filter(
+        l => l.status === 'Pending'
+      );
+
+      this.pastRequests = allLeaves.filter(
+        l => l.status !== 'Pending'
+      );
+
+      this.requestsLoading = false;
+    },
+    error: () => {
+      this.requestsError = 'Failed to load leave requests.';
+      this.requestsLoading = false;
+    }
+  });
+}
+
+}
