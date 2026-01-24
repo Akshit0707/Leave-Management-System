@@ -1,7 +1,7 @@
 function getApiUrl() {
   // Netlify and browser: use window.API_URL if set
-  if (typeof window !== 'undefined' && window['API_URL']) {
-    return window['API_URL'];
+  if (typeof window !== 'undefined' && (window as any).API_URL) {
+    return (window as any).API_URL;
   }
   // Node.js/SSR: use process.env.API_URL if set
   if (typeof process !== 'undefined' && process.env && process.env['API_URL']) {
