@@ -1,38 +1,44 @@
 /* Main dashboard container */
 .dashboard-main-container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 32px 16px;
-  background: #f8fafc;
-  border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f8fafc 60%, #e0e7ff 100%);
+  border-radius: 22px;
+  box-shadow: 0 8px 32px rgba(80, 112, 255, 0.10), 0 1.5px 8px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s;
 }
 
 .dashboard-content {
   background: #fff;
-  border-radius: 12px;
-  padding: 32px 24px;
+  border-radius: 16px;
+  padding: 36px 32px 32px 32px;
   margin-top: 24px;
+  box-shadow: 0 2px 12px rgba(80, 112, 255, 0.07);
 }
 
 .dashboard-header {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .dashboard-welcome {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #2d3a5a;
+  letter-spacing: 0.5px;
 }
 
 .dashboard-title {
   margin-bottom: 24px;
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #4f46e5;
   text-align: left;
+  letter-spacing: 0.2px;
 }
 
 .dashboard-loading {
@@ -46,18 +52,19 @@
 .dashboard-stats-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 28px;
   justify-content: center;
+  margin-bottom: 18px;
 }
 
 .dashboard-stat-card {
-  background: #f1f5f9;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  min-width: 180px;
+  background: linear-gradient(135deg, #f1f5f9 80%, #e0e7ff 100%);
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(80, 112, 255, 0.08);
+  min-width: 170px;
   max-width: 220px;
-  flex: 1 1 180px;
-  padding: 18px 12px;
+  flex: 1 1 170px;
+  padding: 22px 14px 18px 14px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -65,6 +72,12 @@
   justify-content: center;
   word-break: break-word;
   overflow-wrap: break-word;
+  transition: box-shadow 0.2s, transform 0.2s;
+  border: 1.5px solid #e0e7ff;
+}
+.dashboard-stat-card:hover {
+  box-shadow: 0 8px 32px rgba(80, 112, 255, 0.13);
+  transform: translateY(-4px) scale(1.03);
 }
 
 .dashboard-stat-icon {
@@ -73,18 +86,21 @@
 }
 
 .dashboard-stat-label {
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.02rem;
+  font-weight: 600;
   margin-bottom: 6px;
-  color: #2c3e50;
+  color: #6366f1;
   white-space: normal;
   word-break: break-word;
+  letter-spacing: 0.2px;
 }
 
 .dashboard-stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #2563eb;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
 }
 
 @media (max-width: 768px) {
@@ -384,19 +400,30 @@
   font-weight: 600;
 }
 
+.status-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  margin-right: 2px;
+}
 .status-pending {
-  background: #fff3cd;
-  color: #856404;
+  background: #fef9c3;
+  color: #b45309;
+  border: 1.5px solid #fde68a;
 }
-
 .status-approved {
-  background: #d4edda;
-  color: #155724;
+  background: #d1fae5;
+  color: #047857;
+  border: 1.5px solid #6ee7b7;
 }
-
 .status-rejected {
-  background: #f8d7da;
-  color: #721c24;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1.5px solid #fca5a5;
 }
 .action-btn {
   padding: 6px 12px;
@@ -426,16 +453,37 @@
   background-color: #b91c1c;
 }
 .comment-box {
-  width: 100%;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 13px;
+  border: 1.5px solid #e0e7ff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  width: 120px;
+  transition: border 0.2s;
+}
+.comment-box:focus {
+  border: 1.5px solid #6366f1;
+  outline: none;
 }
 
-.comment-box:focus {
-  outline: none;
-  border-color: #2563eb;
+.role-tag.manager {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+}
+.role-tag.employee {
+  background: linear-gradient(135deg, #22d3ee 0%, #0ea5e9 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(34,211,238,0.08);
+}
+.error-message {
+  color: #b91c1c;
+  background: #fee2e2;
+  border: 1.5px solid #fca5a5;
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin: 12px 0 18px 0;
+  font-weight: 600;
+  font-size: 15px;
 }
 @media (max-width: 768px) {
   .dashboard-table {
