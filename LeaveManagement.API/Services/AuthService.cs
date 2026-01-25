@@ -1,3 +1,28 @@
+
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using BCrypt.Net;
+using LeaveManagement.API.Data;
+using LeaveManagement.API.DTOs;
+using LeaveManagement.API.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+
+namespace LeaveManagement.API.Services;
+
+public class AuthService : IAuthService
+{
+    private readonly AppDbContext _db;
+    private readonly IConfiguration _config;
+
+    public AuthService(AppDbContext db, IConfiguration config)
+    {
+        _db = db;
+        _config = config;
+    }
+
     public async Task<List<object>> GetAllPasswordResetRequestsAsync()
     {
         // Return all requests with a status string for admin UI
@@ -23,29 +48,6 @@
         request.IsRejected = true;
         await _db.SaveChangesAsync();
         return true;
-    }
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using BCrypt.Net;
-using LeaveManagement.API.Data;
-using LeaveManagement.API.DTOs;
-using LeaveManagement.API.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-
-namespace LeaveManagement.API.Services;
-
-public class AuthService : IAuthService
-{
-    private readonly AppDbContext _db;
-    private readonly IConfiguration _config;
-
-    public AuthService(AppDbContext db, IConfiguration config)
-    {
-        _db = db;
-        _config = config;
     }
 
     public async Task<AuthResponse?> RegisterAsync(RegisterRequest request)
