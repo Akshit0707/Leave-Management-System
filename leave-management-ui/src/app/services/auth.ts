@@ -106,4 +106,9 @@ export class Auth {
     // Replace with actual backend call
     return this.http.post<any>(`${this.apiUrl}/request-password-reset`, { email });
   }
+
+  requestPasswordResetWithNewPassword(email: string, newPassword: string) {
+    // Simulate API call for password reset request with new password
+    return this.http.post<any>(`${this.apiUrl}/request-password-reset`, { email, newPassword });
+  }
 }

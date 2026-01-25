@@ -12,25 +12,71 @@
   border-radius: 1.5rem;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
   text-align: center;
-  max-width: 400px;
+  max-width: 440px;
+  width: 100%;
+  animation: fadeIn 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.landing-card h1 {
-  margin-bottom: 1rem;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.landing-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  font-size: 2rem;
+  font-weight: 700;
   color: #3b82f6;
-  font-size: 2.2rem;
 }
 
-.landing-card p {
-  margin-bottom: 2rem;
+.landing-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.12);
+}
+
+.landing-description {
+  margin: 1.2rem 0 1.5rem 0;
   color: #64748b;
   font-size: 1.1rem;
+}
+
+.landing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  text-align: left;
+}
+
+.landing-features li {
+  margin-bottom: 0.7rem;
+  font-size: 1rem;
+  color: #374151;
+  display: flex;
+  align-items: center;
+}
+
+.feature-icon {
+  margin-right: 0.5rem;
+  color: #22c55e;
+  font-size: 1.2rem;
 }
 
 .landing-actions {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
+}
+
+button[mat-raised-button], button[mat-stroked-button] {
+  min-width: 120px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 2rem;
 }
 
 .landing-btn {

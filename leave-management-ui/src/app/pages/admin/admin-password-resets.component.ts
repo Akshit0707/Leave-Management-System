@@ -13,9 +13,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrl: './admin-password-resets.component.css'
 })
 export class AdminPasswordResetsComponent implements OnInit {
-  displayedColumns: string[] = ['email', 'requestedAt', 'actions'];
+  displayedColumns: string[] = ['email', 'requestedAt', 'status', 'actions'];
   requests: any[] = [];
   isLoading = false;
+  error: string = '';
 
   constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
 
@@ -27,10 +28,12 @@ export class AdminPasswordResetsComponent implements OnInit {
     this.isLoading = true;
     this.http.get<any[]>('/api/auth/pending-password-resets').subscribe({
       next: (data) => {
-        this.requests = data;
+        this.requests = data.map(r => ({ ...r, status: r.status || 'pending' }));
         this.isLoading = false;
+        this.error = '';
       },
-      error: () => {
+      error: (err) => {
+        this.error = 'Failed to load requests';
         this.snackBar.open('Failed to load requests', 'Close', { duration: 3000 });
         this.isLoading = false;
       }
@@ -43,8 +46,9 @@ export class AdminPasswordResetsComponent implements OnInit {
         this.snackBar.open('Request approved', 'Close', { duration: 2000 });
         this.loadRequests();
       },
-      error: () => {
+      error: (err) => {
         this.snackBar.open('Approval failed', 'Close', { duration: 3000 });
+        this.error = 'Approval failed';
       }
     });
   }

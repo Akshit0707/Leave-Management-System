@@ -13,22 +13,29 @@ import { Auth } from '../../services/auth';
 })
 export class ForgotPasswordComponent {
   email: string = '';
+  newPassword: string = '';
+  confirmPassword: string = '';
   message: string = '';
   isLoading: boolean = false;
+  requestSubmitted: boolean = false;
 
   constructor(private authService: Auth, private router: Router) {}
 
   requestReset() {
-    if (!this.email) {
-      this.message = 'Please enter your email.';
+    if (!this.email || !this.newPassword || !this.confirmPassword) {
+      this.message = 'Please fill in all fields.';
+      return;
+    }
+    if (this.newPassword !== this.confirmPassword) {
+      this.message = 'Passwords do not match.';
       return;
     }
     this.isLoading = true;
-    // Simulate API call to request password reset (admin approval required)
-    this.authService.requestPasswordReset(this.email).subscribe({
+    this.authService.requestPasswordResetWithNewPassword(this.email, this.newPassword).subscribe({
       next: () => {
-        this.message = 'Request submitted. Please wait for admin approval.';
+        this.message = 'Request submitted. Please wait until admin approves your request.';
         this.isLoading = false;
+        this.requestSubmitted = true;
       },
       error: () => {
         this.message = 'Failed to submit request. Try again.';
