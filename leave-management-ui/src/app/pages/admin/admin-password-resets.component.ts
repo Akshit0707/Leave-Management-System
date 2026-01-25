@@ -26,7 +26,7 @@ export class AdminPasswordResetsComponent implements OnInit {
 
   loadRequests() {
     this.isLoading = true;
-    this.http.get<any[]>('/api/auth/pending-password-resets').subscribe({
+    this.http.get<any[]>('/api/auth/all-password-resets').subscribe({
       next: (data) => {
         this.requests = data.map(r => ({ ...r, status: r.status || 'pending' }));
         this.isLoading = false;
