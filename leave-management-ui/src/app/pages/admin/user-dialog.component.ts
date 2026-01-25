@@ -32,7 +32,12 @@ export class UserDialogComponent {
 
   save() {
     if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+      // If role is not Employee, clear managerId
+      const value = { ...this.form.value };
+      if (value.role !== 'Employee') {
+        value.managerId = null;
+      }
+      this.dialogRef.close(value);
     }
   }
 

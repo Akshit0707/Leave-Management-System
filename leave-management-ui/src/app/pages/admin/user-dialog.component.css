@@ -3,17 +3,18 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .form-group label {
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 6px;
-  color: #374151;
+  color: #4f46e5;
+  font-size: 1.08rem;
 }
 
 input[type="text"], input[type="email"], mat-select {
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-radius: 8px;
   border: 1.5px solid #e0e7ff;
   font-size: 15px;
@@ -21,10 +22,17 @@ input[type="text"], input[type="email"], mat-select {
   color: #22223b;
   outline: none;
   margin-bottom: 2px;
+  transition: border 0.18s;
+}
+
+input[type="text"]:focus, input[type="email"]:focus {
+  border: 1.5px solid #6366f1;
+  background: #fff;
 }
 
 mat-select {
   min-width: 100px;
+  background: #f9fafb;
 }
 
 button[mat-button], button[mat-raised-button] {
@@ -36,9 +44,10 @@ button[mat-button], button[mat-raised-button] {
 
 h2[mat-dialog-title] {
   font-size: 1.4rem;
-  font-weight: 800;
+  font-weight: 900;
   color: #4f46e5;
   margin-bottom: 18px;
+  letter-spacing: -1px;
 }
 
 /* Dialog background */
