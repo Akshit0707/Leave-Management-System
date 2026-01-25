@@ -51,9 +51,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNetlify", policy =>
     {
-        policy.WithOrigins("https://your-netlify-site.netlify.app")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(
+            "https://your-netlify-site.netlify.app",
+            "http://localhost:4200"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
