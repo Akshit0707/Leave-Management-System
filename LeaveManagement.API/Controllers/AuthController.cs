@@ -1,3 +1,25 @@
+    [HttpGet("pending-password-resets")]
+    public async Task<IActionResult> GetPendingPasswordResets()
+    {
+        var requests = await _auth.GetPendingPasswordResetRequestsAsync();
+        return Ok(requests);
+    }
+
+    [HttpPost("approve-password-reset")]
+    public async Task<IActionResult> ApprovePasswordReset([FromBody] int requestId)
+    {
+        var result = await _auth.ApprovePasswordResetAsync(requestId);
+        if (!result) return BadRequest("Could not approve request.");
+        return Ok(new { message = "Request approved." });
+    }
+
+    [HttpPost("complete-password-reset")]
+    public async Task<IActionResult> CompletePasswordReset([FromBody] CompletePasswordResetDto dto)
+    {
+        var result = await _auth.CompletePasswordResetAsync(dto.RequestId, dto.NewPassword);
+        if (!result) return BadRequest("Could not complete password reset.");
+        return Ok(new { message = "Password reset completed." });
+    }
 using LeaveManagement.API.DTOs;
 using LeaveManagement.API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -71,6 +93,24 @@ public class AuthController : ControllerBase
             if (ex.InnerException != null) Console.WriteLine($"Inner: {ex.InnerException.Message}");
             Console.WriteLine(ex.StackTrace);
             return StatusCode(500, new { error = ex.Message, details = ex.InnerException?.Message });
+        }
+    }
+
+    [HttpPost("request-password-reset")]
+    public async Task<IActionResult> RequestPasswordReset([FromBody] LoginRequest request)
+    {
+        try
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.Email))
+                return BadRequest("Email is required.");
+            var result = await _auth.RequestPasswordResetAsync(request.Email);
+            if (!result)
+                return BadRequest("Could not submit password reset request.");
+            return Ok(new { message = "Password reset request submitted. Await admin approval." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = ex.Message });
         }
     }
 }

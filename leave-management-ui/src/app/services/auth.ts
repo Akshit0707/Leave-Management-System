@@ -100,4 +100,10 @@ export class Auth {
   getUserRole(): string | null {
     return this.getUser()?.role ?? null;
   }
+
+  requestPasswordReset(email: string) {
+    // Simulate API call for password reset request (admin approval required)
+    // Replace with actual backend call
+    return this.http.post<any>(`${this.apiUrl}/request-password-reset`, { email });
+  }
 }

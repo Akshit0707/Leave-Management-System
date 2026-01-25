@@ -13,3 +13,47 @@ mat-dialog-content {
 mat-dialog-actions {
   margin-top: 10px;
 }
+
+.user-dialog-container {
+  padding: 32px 24px 16px 24px;
+  min-width: 340px;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-dialog-title {
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #2d3a4a;
+}
+
+.user-dialog-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.user-dialog-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.user-dialog-field {
+  width: 100%;
+}
+
+.user-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 22px;
+}

@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
 
     // 🔴 REQUIRED for mat-dialog-* directives
     MatDialogModule,
@@ -25,17 +25,35 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrl: './user-dialog.component.css'
 })
 export class UserDialogComponent {
+  form: FormGroup;
+  roles = ['Employee', 'Manager', 'Admin'];
+  managers: any[] = [];
+  isEdit: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<UserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public user: any
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private fb: FormBuilder
+  ) {
+    const user = data?.user || {};
+    this.managers = data?.managers || [];
+    this.isEdit = !!data?.isEdit;
+    this.form = this.fb.group({
+      firstName: [user.firstName || '', Validators.required],
+      lastName: [user.lastName || '', Validators.required],
+      email: [user.email || '', [Validators.required, Validators.email]],
+      role: [user.role ? user.role : (user.role === 0 ? 'Employee' : user.role === 1 ? 'Manager' : user.role === 2 ? 'Admin' : 'Employee'), Validators.required],
+      managerId: [user.managerId ?? null]
+    });
+  }
 
   close(): void {
     this.dialogRef.close();
   }
 
   update(): void {
-    this.dialogRef.close(this.user);
+    if (this.form.valid) {
+      this.dialogRef.close({ ...this.form.value });
+    }
   }
 }

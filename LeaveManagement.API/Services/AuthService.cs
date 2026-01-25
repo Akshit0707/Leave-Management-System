@@ -120,4 +120,50 @@ public class AuthService : IAuthService
             Token = new JwtSecurityTokenHandler().WriteToken(token)
         };
     }
+
+    public async Task<bool> RequestPasswordResetAsync(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email)) return false;
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null) return false;
+        var request = new PasswordResetRequest
+        {
+            Email = email,
+            UserId = user.Id,
+            RequestedAt = DateTime.UtcNow,
+            IsApproved = false,
+            IsCompleted = false
+        };
+        await _db.PasswordResetRequests.AddAsync(request);
+        await _db.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<List<PasswordResetRequest>> GetPendingPasswordResetRequestsAsync()
+    {
+        return await _db.PasswordResetRequests.Where(r => !r.IsApproved && !r.IsCompleted).ToListAsync();
+    }
+
+    public async Task<bool> ApprovePasswordResetAsync(int requestId)
+    {
+        var request = await _db.PasswordResetRequests.FindAsync(requestId);
+        if (request == null || request.IsCompleted) return false;
+        request.IsApproved = true;
+        request.ApprovedAt = DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> CompletePasswordResetAsync(int requestId, string newPassword)
+    {
+        var request = await _db.PasswordResetRequests.FindAsync(requestId);
+        if (request == null || !request.IsApproved || request.IsCompleted) return false;
+        var user = await _db.Users.FindAsync(request.UserId);
+        if (user == null) return false;
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        request.IsCompleted = true;
+        request.CompletedAt = DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+        return true;
+    }
 }

@@ -6,12 +6,12 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule,BrowserAnimationsModule,
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule,
   MatDialogModule,
   MatInputModule,
   MatButtonModule,
