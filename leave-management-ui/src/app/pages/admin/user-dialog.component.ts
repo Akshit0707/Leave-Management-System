@@ -1,47 +1,41 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-user-dialog',
-  templateUrl: './user-dialog.component.html',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSelectModule]
+  imports: [
+    CommonModule,
+    FormsModule,
+
+    // 🔴 REQUIRED for mat-dialog-* directives
+    MatDialogModule,
+
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule
+  ],
+  templateUrl: './user-dialog.component.html',
+  styleUrl: './user-dialog.component.css'
 })
 export class UserDialogComponent {
-  form: FormGroup;
-  roles = ['Employee', 'Manager'];
-  managers: any[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<UserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder
-  ) {
-    this.managers = data.managers || [];
-    this.form = this.fb.group({
-      firstName: [data.user?.firstName || '', Validators.required],
-      lastName: [data.user?.lastName || '', Validators.required],
-      email: [data.user?.email || '', [Validators.required, Validators.email]],
-      role: [data.user?.role || 'Employee', Validators.required],
-      managerId: [data.user?.managerId || null]
-    });
-  }
+    @Inject(MAT_DIALOG_DATA) public user: any
+  ) {}
 
-  save() {
-    if (this.form.valid) {
-      // If role is not Employee, clear managerId
-      const value = { ...this.form.value };
-      if (value.role !== 'Employee') {
-        value.managerId = null;
-      }
-      this.dialogRef.close(value);
-    }
-  }
-
-  close() {
+  close(): void {
     this.dialogRef.close();
+  }
+
+  update(): void {
+    this.dialogRef.close(this.user);
   }
 }

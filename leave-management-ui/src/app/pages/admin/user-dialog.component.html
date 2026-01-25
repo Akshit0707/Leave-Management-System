@@ -1,32 +1,34 @@
-<h2 mat-dialog-title>{{ data.isEdit ? 'Edit User' : 'Add User' }}</h2>
-<form [formGroup]="form" (ngSubmit)="save()" class="user-dialog-form">
-  <mat-form-field appearance="outline" class="user-dialog-field">
+<h2 mat-dialog-title>Edit User</h2>
+
+<mat-dialog-content>
+
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label>First Name</mat-label>
-    <input matInput formControlName="firstName" type="text" required />
+    <input matInput [(ngModel)]="user.firstName">
   </mat-form-field>
-  <mat-form-field appearance="outline" class="user-dialog-field">
+
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label>Last Name</mat-label>
-    <input matInput formControlName="lastName" type="text" required />
+    <input matInput [(ngModel)]="user.lastName">
   </mat-form-field>
-  <mat-form-field appearance="outline" class="user-dialog-field">
+
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label>Email</mat-label>
-    <input matInput formControlName="email" type="email" required />
+    <input matInput [(ngModel)]="user.email">
   </mat-form-field>
-  <mat-form-field appearance="outline" class="user-dialog-field">
+
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label>Role</mat-label>
-    <mat-select formControlName="role">
-      <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
+    <mat-select [(ngModel)]="user.role">
+      <mat-option value="Employee">Employee</mat-option>
+      <mat-option value="Manager">Manager</mat-option>
+      <mat-option value="Admin">Admin</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field *ngIf="form.get('role')?.value === 'Employee'" appearance="outline" class="user-dialog-field">
-    <mat-label>Manager</mat-label>
-    <mat-select formControlName="managerId">
-      <mat-option [value]="null">-- No Manager --</mat-option>
-      <mat-option *ngFor="let m of managers" [value]="m.id">{{ m.firstName }} {{ m.lastName }} ({{ m.email }})</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <div class="user-dialog-actions">
-    <button mat-stroked-button color="primary" type="button" (click)="close()">Cancel</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">{{ data.isEdit ? 'Update' : 'Add' }}</button>
-  </div>
-</form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="update()">Update</button>
+</mat-dialog-actions>
