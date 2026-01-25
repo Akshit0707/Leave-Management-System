@@ -49,13 +49,11 @@ var allowedOrigins = builder.Configuration["AllowedOrigins"]
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngularApp", policy =>
+    options.AddPolicy("AllowNetlify", policy =>
     {
-        policy
-            .WithOrigins(allowedOrigins)
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+        policy.WithOrigins("https://your-netlify-site.netlify.app")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
@@ -121,7 +119,7 @@ app.UseSwaggerUI();
 
 app.UseRouting();
 
-app.UseCors("AllowAngularApp");
+app.UseCors("AllowNetlify");
 
 app.UseAuthentication();
 app.UseAuthorization();
