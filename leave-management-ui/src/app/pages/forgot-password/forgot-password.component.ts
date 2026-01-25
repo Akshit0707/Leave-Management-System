@@ -1,9 +1,19 @@
+
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
 import { PasswordResetService } from '../../services/password-reset.service';
+
+
+interface PasswordResetRequest {
+  id: number;
+  email: string;
+  isApproved: boolean;
+  isCompleted: boolean;
+  isRejected?: boolean;
+}
 
 @Component({
   selector: 'app-forgot-password',
@@ -12,6 +22,7 @@ import { PasswordResetService } from '../../services/password-reset.service';
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.css']
 })
+
 export class ForgotPasswordComponent {
   email: string = '';
   message: string = '';
@@ -33,7 +44,7 @@ export class ForgotPasswordComponent {
     this.isLoading = true;
     // Check for existing approved request
     this.passwordResetService.getLatestResetRequest(this.email).subscribe({
-      next: (req) => {
+      next: (req: PasswordResetRequest | undefined) => {
         if (req && req.isApproved && !req.isCompleted) {
           this.showResetPopup = true;
           this.resetRequestId = req.id;
