@@ -1,14 +1,17 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { environment } from '../../../environments/environment';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-password-resets',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatSnackBarModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatSnackBarModule, FormsModule],
   templateUrl: './admin-password-resets.component.html',
   styleUrl: './admin-password-resets.component.css'
 })
@@ -26,7 +29,7 @@ export class AdminPasswordResetsComponent implements OnInit {
 
   loadRequests() {
     this.isLoading = true;
-    this.http.get<any[]>('/api/auth/all-password-resets').subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/api/auth/all-password-resets`).subscribe({
       next: (data) => {
         this.requests = data.map(r => ({ ...r, status: r.status || 'pending' }));
         this.isLoading = false;
@@ -40,8 +43,8 @@ export class AdminPasswordResetsComponent implements OnInit {
     });
   }
 
-  approve(requestId: number) {
-    this.http.post('/api/auth/approve-password-reset', requestId).subscribe({
+  approve(requestId: number, comment: string) {
+    this.http.post(`${environment.apiUrl}/api/auth/approve-password-reset`, { requestId, comment }).subscribe({
       next: () => {
         this.snackBar.open('Request approved', 'Close', { duration: 2000 });
         this.loadRequests();
@@ -49,6 +52,19 @@ export class AdminPasswordResetsComponent implements OnInit {
       error: (err) => {
         this.snackBar.open('Approval failed', 'Close', { duration: 3000 });
         this.error = 'Approval failed';
+      }
+    });
+  }
+
+  reject(requestId: number, comment: string) {
+    this.http.post(`${environment.apiUrl}/api/auth/reject-password-reset`, { requestId, comment }).subscribe({
+      next: () => {
+        this.snackBar.open('Request rejected', 'Close', { duration: 2000 });
+        this.loadRequests();
+      },
+      error: (err) => {
+        this.snackBar.open('Rejection failed', 'Close', { duration: 3000 });
+        this.error = 'Rejection failed';
       }
     });
   }

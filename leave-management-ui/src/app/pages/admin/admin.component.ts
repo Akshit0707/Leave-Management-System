@@ -7,8 +7,10 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UserDialogComponent } from './user-dialog.component';
+
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
+import { AdminPasswordResetsComponent } from './admin-password-resets.component';
 
 @Component({
   selector: 'app-admin',
@@ -24,7 +26,8 @@ import { FormsModule } from '@angular/forms';
     MatSnackBarModule,
     MatDialogModule,
     UserDialogComponent,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    AdminPasswordResetsComponent
   ]
 })
 export class AdminComponent implements OnInit {
