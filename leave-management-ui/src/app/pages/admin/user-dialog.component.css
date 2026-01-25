@@ -1,61 +1,36 @@
-/* User Dialog Styles for Admin Panel (Angular Material modularity) */
+/* Modular Angular Material dialog styles - FINAL POLISH */
 
 :host {
   display: block;
-  max-width: 420px;
+  max-width: 440px;
   width: 100%;
 }
 
-.form-group {
+.user-dialog-form {
   display: flex;
   flex-direction: column;
-  margin-bottom: 18px;
+  gap: 18px;
+  padding-top: 8px;
 }
 
-.form-group label {
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: #4f46e5;
-  font-size: 1.08rem;
-}
-
-input[formControlName], mat-select {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1.5px solid #e0e7ff;
-  font-size: 15px;
-  background: #f9fafb;
-  color: #22223b;
-  outline: none;
-  margin-bottom: 2px;
-  transition: border 0.18s;
+.user-dialog-field {
   width: 100%;
-  box-sizing: border-box;
 }
 
-input[formControlName]:focus {
-  border: 1.5px solid #6366f1;
-  background: #fff;
-}
-
-mat-select {
-  min-width: 100px;
-  background: #f9fafb;
-}
-
-button[mat-button], button[mat-raised-button] {
-  min-width: 90px;
-  font-weight: 700;
-  border-radius: 999px;
-  font-size: 15px;
+.user-dialog-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 12px;
 }
 
 h2[mat-dialog-title] {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 900;
   color: #4f46e5;
   margin-bottom: 18px;
   letter-spacing: -1px;
+  text-align: center;
 }
 
 :host ::ng-deep .mat-dialog-container {
@@ -63,6 +38,20 @@ h2[mat-dialog-title] {
   box-shadow: 0 4px 32px rgba(80,112,255,0.13) !important;
   padding: 32px 28px !important;
   background: #fff !important;
+}
+
+:host ::ng-deep .mat-form-field {
+  font-size: 1.08rem;
+  width: 100%;
+  background: #f9fafb;
+}
+
+:host ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #e0e7ff;
+}
+
+:host ::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline {
+  color: #6366f1;
 }
 
 :host ::ng-deep .mat-select-panel {
@@ -73,4 +62,16 @@ h2[mat-dialog-title] {
 :host ::ng-deep .mat-option {
   font-size: 15px;
   padding: 10px 18px;
+}
+
+:host ::ng-deep .mat-input-element {
+  font-size: 1.08rem;
+  padding: 10px 14px;
+}
+
+:host ::ng-deep .mat-raised-button, :host ::ng-deep .mat-stroked-button {
+  font-weight: 700;
+  border-radius: 999px;
+  font-size: 15px;
+  min-width: 90px;
 }
