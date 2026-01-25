@@ -1,4 +1,10 @@
-/* User Dialog Styles for Admin Panel */
+/* User Dialog Styles for Admin Panel (Angular Material modularity) */
+
+:host {
+  display: block;
+  max-width: 420px;
+  width: 100%;
+}
 
 .form-group {
   display: flex;
@@ -13,7 +19,7 @@
   font-size: 1.08rem;
 }
 
-input[type="text"], input[type="email"], mat-select {
+input[formControlName], mat-select {
   padding: 10px 14px;
   border-radius: 8px;
   border: 1.5px solid #e0e7ff;
@@ -23,9 +29,11 @@ input[type="text"], input[type="email"], mat-select {
   outline: none;
   margin-bottom: 2px;
   transition: border 0.18s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-input[type="text"]:focus, input[type="email"]:focus {
+input[formControlName]:focus {
   border: 1.5px solid #6366f1;
   background: #fff;
 }
@@ -50,10 +58,19 @@ h2[mat-dialog-title] {
   letter-spacing: -1px;
 }
 
-/* Dialog background */
-.mat-dialog-container {
+:host ::ng-deep .mat-dialog-container {
   border-radius: 18px !important;
   box-shadow: 0 4px 32px rgba(80,112,255,0.13) !important;
   padding: 32px 28px !important;
   background: #fff !important;
+}
+
+:host ::ng-deep .mat-select-panel {
+  border-radius: 10px !important;
+  box-shadow: 0 2px 16px rgba(80,112,255,0.10) !important;
+}
+
+:host ::ng-deep .mat-option {
+  font-size: 15px;
+  padding: 10px 18px;
 }
