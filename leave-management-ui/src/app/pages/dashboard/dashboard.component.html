@@ -5,6 +5,7 @@
       <span class="dashboard-welcome">Welcome Back, {{ userName }}</span>
       <span class="role-tag employee" *ngIf="!isManager">EMPLOYEE</span>
       <span class="role-tag manager" *ngIf="isManager">MANAGER</span>
+      <span *ngIf="isManager && managerId" class="manager-id-badge">Your Manager ID: <b>{{ managerId }}</b></span>
     </div>
 
     <!-- STATISTICS (Single Section, No Duplication) -->

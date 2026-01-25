@@ -41,6 +41,7 @@ export class DashboardComponent implements OnInit {
   isLoading = true;
   isManager = false;
   userName = '';
+  managerId: number | null = null;
 
   // Angular Material DataSources
   pendingDataSource = new MatTableDataSource<any>([]);
@@ -74,6 +75,7 @@ export class DashboardComponent implements OnInit {
     this.isManager = this.authService.isManager();
     const user = this.authService.getUser();
     this.userName = user?.firstName ?? 'User';
+    this.managerId = (this.isManager && user?.userId) ? user.userId : null;
 
     this.loadSummary();
 

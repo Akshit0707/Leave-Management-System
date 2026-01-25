@@ -15,10 +15,12 @@ public class LeaveService : ILeaveService
         _db = db;
     }
 
-    public async Task<IEnumerable<LeaveRequestDto>> GetAllAsync()
+
+    public async Task<IEnumerable<LeaveRequestDto>> GetAllForManagerAsync(int managerId)
     {
         var items = await _db.LeaveRequests
             .Include(l => l.User)
+            .Where(l => l.User.ManagerId == managerId)
             .OrderByDescending(l => l.CreatedAt)
             .ToListAsync();
         return items.Select(MapToDto);
@@ -83,14 +85,14 @@ public class LeaveService : ILeaveService
         return items.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<LeaveRequestDto>> GetPendingAsync()
+
+    public async Task<IEnumerable<LeaveRequestDto>> GetPendingForManagerAsync(int managerId)
     {
         var items = await _db.LeaveRequests
             .Include(l => l.User)
-            .Where(l => l.Status == LeaveRequestStatus.Pending)
+            .Where(l => l.Status == LeaveRequestStatus.Pending && l.User.ManagerId == managerId)
             .OrderBy(l => l.CreatedAt)
             .ToListAsync();
-
         return items.Select(MapToDto);
     }
 

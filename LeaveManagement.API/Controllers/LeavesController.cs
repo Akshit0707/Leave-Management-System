@@ -26,7 +26,8 @@ public class LeavesController : ControllerBase
     {
         try
         {
-            var result = await _service.GetAllAsync();
+            var managerId = GetUserId();
+            var result = await _service.GetAllForManagerAsync(managerId);
             return Ok(result);
         }
         catch (Exception ex)
@@ -112,7 +113,8 @@ public class LeavesController : ControllerBase
     {
         try
         {
-            var result = await _service.GetPendingAsync();
+            var managerId = GetUserId();
+            var result = await _service.GetPendingForManagerAsync(managerId);
             return Ok(result);
         }
         catch (Exception ex)
