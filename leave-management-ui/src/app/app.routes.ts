@@ -8,13 +8,15 @@ import { CreateLeaveComponent } from './pages/create-leave/create-leave.componen
 import { PendingLeavesComponent } from './pages/pending-leaves/pending-leaves.component';
 import { authGuard } from './services/auth.guard';
 import { managerGuard } from './services/manager.guard';
+
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { LoginComponent } from './pages/login/Login.component';
 
 
-export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent) },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'my-leaves', component: MyLeavesComponent, canActivate: [authGuard] },
   { path: 'create-leave', component: CreateLeaveComponent, canActivate: [authGuard] },
