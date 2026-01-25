@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LeaveService } from '../../services/leave';
 import { Auth } from '../../services/auth';
@@ -70,7 +71,7 @@ export class DashboardComponent implements OnInit {
     private authService: Auth,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private router: import('@angular/router').Router
+    private router: Router
   ) {}
 
   ngOnInit(): void {

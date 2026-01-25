@@ -1,0 +1,50 @@
+/* User Dialog Styles for Admin Panel */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+input[type="text"], input[type="email"], mat-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e0e7ff;
+  font-size: 15px;
+  background: #f9fafb;
+  color: #22223b;
+  outline: none;
+  margin-bottom: 2px;
+}
+
+mat-select {
+  min-width: 100px;
+}
+
+button[mat-button], button[mat-raised-button] {
+  min-width: 90px;
+  font-weight: 700;
+  border-radius: 999px;
+  font-size: 15px;
+}
+
+h2[mat-dialog-title] {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #4f46e5;
+  margin-bottom: 18px;
+}
+
+/* Dialog background */
+.mat-dialog-container {
+  border-radius: 18px !important;
+  box-shadow: 0 4px 32px rgba(80,112,255,0.13) !important;
+  padding: 32px 28px !important;
+  background: #fff !important;
+}
