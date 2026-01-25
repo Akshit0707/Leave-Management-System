@@ -107,8 +107,9 @@ export class Auth {
     return this.http.post<any>(`${this.apiUrl}/request-password-reset`, { email });
   }
 
-  requestPasswordResetWithNewPassword(email: string, newPassword: string) {
-    // Simulate API call for password reset request with new password
-    return this.http.post<any>(`${this.apiUrl}/request-password-reset`, { email, newPassword });
+  // Removed: requestPasswordResetWithNewPassword. User sets new password after admin approval.
+
+  completePasswordReset(requestId: number, newPassword: string) {
+    return this.http.post<any>(`${this.apiUrl}/complete-password-reset`, { requestId, newPassword });
   }
 }

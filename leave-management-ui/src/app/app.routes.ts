@@ -8,6 +8,7 @@ export const routes: Routes = [
   { path: 'register', loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent) },
   { path: 'forgot-password', loadComponent: () => import('./pages/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent) },
   { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent), canActivate: [authGuard] },
+  { path: 'reset-password', loadComponent: () => import('./pages/reset-password/reset-password.component').then(m => m.ResetPasswordComponent) },
   { path: 'my-leaves', loadComponent: () => import('./pages/my-leaves/my-leaves.component').then(m => m.MyLeavesComponent), canActivate: [authGuard] },
   { path: 'create-leave', loadComponent: () => import('./pages/create-leave/create-leave.component').then(m => m.CreateLeaveComponent), canActivate: [authGuard] },
   { path: 'pending-leaves', loadComponent: () => import('./pages/pending-leaves/pending-leaves.component').then(m => m.PendingLeavesComponent), canActivate: [authGuard, managerGuard] },
