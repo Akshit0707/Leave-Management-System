@@ -1,3 +1,4 @@
+
 using LeaveManagement.API.DTOs;
 using LeaveManagement.API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,21 @@ public class AuthController : ControllerBase
     public AuthController(IAuthService auth)
     {
         _auth = auth;
+    }
+
+    [HttpGet("all-password-resets")]
+    public async Task<IActionResult> GetAllPasswordResets()
+    {
+        var requests = await _auth.GetAllPasswordResetRequestsAsync();
+        return Ok(requests);
+    }
+
+    [HttpPost("reject-password-reset")]
+    public async Task<IActionResult> RejectPasswordReset([FromBody] int requestId)
+    {
+        var result = await _auth.RejectPasswordResetAsync(requestId);
+        if (!result) return BadRequest("Could not reject request.");
+        return Ok(new { message = "Request rejected." });
     }
 
     [HttpGet("pending-password-resets")]
@@ -37,6 +53,7 @@ public class AuthController : ControllerBase
         if (!result) return BadRequest("Could not complete password reset.");
         return Ok(new { message = "Password reset completed." });
     }
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         try

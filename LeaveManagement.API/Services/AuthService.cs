@@ -1,3 +1,29 @@
+    public async Task<List<object>> GetAllPasswordResetRequestsAsync()
+    {
+        // Return all requests with a status string for admin UI
+        return await _db.PasswordResetRequests
+            .OrderByDescending(r => r.RequestedAt)
+            .Select(r => new {
+                r.Id,
+                r.Email,
+                r.RequestedAt,
+                r.IsApproved,
+                r.IsCompleted,
+                r.ApprovedAt,
+                r.CompletedAt,
+                Status = r.IsCompleted ? "completed" : r.IsApproved ? "approved" : r.IsRejected ? "rejected" : "pending"
+            })
+            .ToListAsync<object>();
+    }
+
+    public async Task<bool> RejectPasswordResetAsync(int requestId)
+    {
+        var request = await _db.PasswordResetRequests.FindAsync(requestId);
+        if (request == null || request.IsCompleted) return false;
+        request.IsRejected = true;
+        await _db.SaveChangesAsync();
+        return true;
+    }
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

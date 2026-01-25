@@ -11,4 +11,6 @@ public interface IAuthService
     Task<List<PasswordResetRequest>> GetPendingPasswordResetRequestsAsync();
     Task<bool> ApprovePasswordResetAsync(int requestId);
     Task<bool> CompletePasswordResetAsync(int requestId, string newPassword);
+    Task<List<object>> GetAllPasswordResetRequestsAsync();
+    Task<bool> RejectPasswordResetAsync(int requestId);
 }

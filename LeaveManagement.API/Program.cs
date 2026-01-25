@@ -7,149 +7,151 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 
+namespace LeaveManagement.API;
 
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(
-            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-        );
-    });
-
-
-/* =======================
-   RAILWAY PORT
-======================= */
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-builder.WebHost.ConfigureKestrel(o =>
+public class Program
 {
-    o.ListenAnyIP(int.Parse(port));
-});
-
-/* =======================
-   CONFIG
-======================= */
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: true)
-    .AddEnvironmentVariables();
-
-/* =======================
-   CORS
-======================= */
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowNetlify", policy =>
+    public static void Main(string[] args)
     {
-        policy.WithOrigins(
-            "https://leavemgmtsy.netlify.app", // your actual Netlify site
-            "http://localhost:4200"
-        )
-        .AllowAnyHeader()
-        .AllowAnyMethod();
-    });
-});
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-/* =======================
-   SERVICES
-======================= */
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+        var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                );
+            });
 
-/* =======================
-   DATABASE (RAILWAY SAFE)
-======================= */
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(GetConnectionString(builder)));
-
-
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ILeaveService, LeaveService>();
-
-/* =======================
-   JWT AUTH
-======================= */
-var jwtKey = builder.Configuration["Jwt:Key"]
-    ?? throw new InvalidOperationException("JWT Key missing");
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(o =>
-    {
-        o.TokenValidationParameters = new TokenValidationParameters
+        /* =======================
+           RAILWAY PORT
+        ======================= */
+        var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+        builder.WebHost.ConfigureKestrel(o =>
         {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtKey)
-            ),
-            ClockSkew = TimeSpan.Zero
-        };
-    });
+            o.ListenAnyIP(int.Parse(port));
+        });
 
-builder.Services.AddAuthorization();
+        /* =======================
+           CONFIG
+        ======================= */
+        builder.Configuration
+            .AddJsonFile("appsettings.json", optional: true)
+            .AddEnvironmentVariables();
 
-var app = builder.Build();
+        /* =======================
+           CORS
+        ======================= */
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowNetlify", policy =>
+            {
+                policy.WithOrigins(
+                    "https://leavemgmtsy.netlify.app", // your actual Netlify site
+                    "http://localhost:4200"
+                )
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+            });
+        });
 
-/* =======================
-   APPLY MIGRATIONS
-======================= */
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
+        /* =======================
+           SERVICES
+        ======================= */
+        builder.Services.AddControllers();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
 
+        /* =======================
+           DATABASE (RAILWAY SAFE)
+        ======================= */
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(GetConnectionString(builder)));
 
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<ILeaveService, LeaveService>();
 
+        /* =======================
+           JWT AUTH
+        ======================= */
+        var jwtKey = builder.Configuration["Jwt:Key"]
+            ?? throw new InvalidOperationException("JWT Key missing");
 
-/* =======================
-   PIPELINE
-======================= */
-app.UseSwagger();
-app.UseSwaggerUI();
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtKey)
+                    ),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
-app.UseRouting();
+        builder.Services.AddAuthorization();
 
-app.UseCors("AllowNetlify");
+        var app = builder.Build();
 
-app.UseAuthentication();
-app.UseAuthorization();
+        /* =======================
+           APPLY MIGRATIONS
+        ======================= */
+        using (var scope = app.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.Database.Migrate();
+        }
 
-app.MapControllers();
-app.MapGet("/health", () => Results.Ok("Healthy"));
+        /* =======================
+           PIPELINE
+        ======================= */
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
-app.Run();
+        app.UseRouting();
 
-/* =======================
-   HELPER METHODS
-======================= */
-string GetConnectionString(WebApplicationBuilder builder)
-{
-    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-    if (string.IsNullOrEmpty(databaseUrl))
+        app.UseCors("AllowNetlify");
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapControllers();
+        app.MapGet("/health", () => Results.Ok("Healthy"));
+
+        app.Run();
+    }
+
+    /* =======================
+       HELPER METHODS
+    ======================= */
+    private static string GetConnectionString(WebApplicationBuilder builder)
+    {
+        var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+        if (string.IsNullOrEmpty(databaseUrl))
 #pragma warning disable CS8603 // Possible null reference return.
-        return builder.Configuration.GetConnectionString("DefaultConnection");
+            return builder.Configuration.GetConnectionString("DefaultConnection");
 #pragma warning restore CS8603 // Possible null reference return.
 
-    // If it's already in ADO.NET format, just return it
-    if (databaseUrl.Contains("Host="))
-        return databaseUrl;
+        // If it's already in ADO.NET format, just return it
+        if (databaseUrl.Contains("Host="))
+            return databaseUrl;
 
-    // Otherwise, parse the URL format
-    var uri = new Uri(databaseUrl);
-    var userInfo = uri.UserInfo.Split(':');
-    var csBuilder = new Npgsql.NpgsqlConnectionStringBuilder
-    {
-        Host = uri.Host,
-        Port = uri.Port,
-        Username = userInfo[0],
-        Password = userInfo[1],
-        Database = uri.AbsolutePath.TrimStart('/'),
-        SslMode = Npgsql.SslMode.Prefer
-    };
-    return csBuilder.ToString();
+        // Otherwise, parse the URL format
+        var uri = new Uri(databaseUrl);
+        var userInfo = uri.UserInfo.Split(':');
+        var csBuilder = new Npgsql.NpgsqlConnectionStringBuilder
+        {
+            Host = uri.Host,
+            Port = uri.Port,
+            Username = userInfo[0],
+            Password = userInfo[1],
+            Database = uri.AbsolutePath.TrimStart('/'),
+            SslMode = Npgsql.SslMode.Prefer
+        };
+        return csBuilder.ToString();
+    }
 }

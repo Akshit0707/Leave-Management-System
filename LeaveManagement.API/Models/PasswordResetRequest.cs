@@ -13,6 +13,7 @@ public class PasswordResetRequest
     public DateTime RequestedAt { get; set; } = DateTime.UtcNow;
     public bool IsApproved { get; set; } = false;
     public bool IsCompleted { get; set; } = false;
+    public bool IsRejected { get; set; } = false;
     public DateTime? ApprovedAt { get; set; }
     public DateTime? CompletedAt { get; set; }
 
