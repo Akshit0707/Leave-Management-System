@@ -84,9 +84,17 @@ export class Auth {
     return null;
   }
 
+
   isManager(): boolean {
     const user = this.getUser();
-    return user?.role === 'Manager';
+    // Accept both string and numeric role for compatibility
+    return user?.role === 'Manager' || user?.role === 1;
+  }
+
+  isAdmin(): boolean {
+    const user = this.getUser();
+    // Accept both string and numeric role for compatibility
+    return user?.role === 'Admin' || user?.role === 2;
   }
 
   getUserRole(): string | null {

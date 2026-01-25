@@ -35,11 +35,12 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit {
 
+export class DashboardComponent implements OnInit {
   summary: any = {};
   isLoading = true;
   isManager = false;
+  isAdmin = false;
   userName = '';
   managerId: number | null = null;
 
@@ -68,14 +69,22 @@ export class DashboardComponent implements OnInit {
     private leaveService: LeaveService,
     private authService: Auth,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: import('@angular/router').Router
   ) {}
 
   ngOnInit(): void {
     this.isManager = this.authService.isManager();
+    this.isAdmin = this.authService.isAdmin();
     const user = this.authService.getUser();
     this.userName = user?.firstName ?? 'User';
     this.managerId = (this.isManager && user?.userId) ? user.userId : null;
+
+    // If admin, redirect to admin dashboard
+    if (this.isAdmin) {
+      this.router.navigate(['/admin']);
+      return;
+    }
 
     this.loadSummary();
 
