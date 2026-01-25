@@ -15,4 +15,7 @@ public class PasswordResetRequest
     public bool IsCompleted { get; set; } = false;
     public DateTime? ApprovedAt { get; set; }
     public DateTime? CompletedAt { get; set; }
+
+    // New column for storing the new password during reset
+    public string? NewPassword { get; set; }
 }
