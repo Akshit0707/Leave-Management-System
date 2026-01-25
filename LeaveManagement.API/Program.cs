@@ -39,20 +39,12 @@ builder.Configuration
 /* =======================
    CORS
 ======================= */
-var allowedOrigins = builder.Configuration["AllowedOrigins"]
-    ?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-    ?? new[]
-    {
-        "http://localhost:4200",
-        "https://leavemgmtsy.netlify.app"
-    };
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNetlify", policy =>
     {
         policy.WithOrigins(
-            "https://your-netlify-site.netlify.app",
+            "https://leavemgmtsy.netlify.app", // your actual Netlify site
             "http://localhost:4200"
         )
         .AllowAnyHeader()
