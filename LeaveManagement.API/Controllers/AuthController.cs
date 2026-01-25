@@ -1,3 +1,20 @@
+using LeaveManagement.API.DTOs;
+using LeaveManagement.API.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LeaveManagement.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
+{
+    private readonly IAuthService _auth;
+
+    public AuthController(IAuthService auth)
+    {
+        _auth = auth;
+    }
+
     [HttpGet("pending-password-resets")]
     public async Task<IActionResult> GetPendingPasswordResets()
     {
@@ -20,24 +37,6 @@
         if (!result) return BadRequest("Could not complete password reset.");
         return Ok(new { message = "Password reset completed." });
     }
-using LeaveManagement.API.DTOs;
-using LeaveManagement.API.Services;
-using Microsoft.AspNetCore.Mvc;
-
-namespace LeaveManagement.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class AuthController : ControllerBase
-{
-    private readonly IAuthService _auth;
-
-    public AuthController(IAuthService auth)
-    {
-        _auth = auth;
-    }
-
-    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         try
