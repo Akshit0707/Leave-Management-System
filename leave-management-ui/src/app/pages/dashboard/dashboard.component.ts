@@ -57,7 +57,8 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild('pendingPaginator') pendingPaginator!: MatPaginator;
   @ViewChild('pastPaginator') pastPaginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('pendingSort') pendingSort!: MatSort;
+  @ViewChild('pastSort') pastSort!: MatSort;
 
   requestsLoading = true;
   requestsError: string | null = null;
@@ -94,7 +95,7 @@ export class DashboardComponent implements OnInit {
       next: (leaves: any[]) => {
         this.pastDataSource.data = leaves;
         this.pastDataSource.paginator = this.pastPaginator;
-        this.pastDataSource.sort = this.sort;
+        this.pastDataSource.sort = this.pastSort;
         this.requestsLoading = false;
       },
       error: () => {
@@ -128,8 +129,8 @@ export class DashboardComponent implements OnInit {
         this.pendingDataSource.paginator = this.pendingPaginator;
         this.pastDataSource.paginator = this.pastPaginator;
 
-        this.pendingDataSource.sort = this.sort;
-        this.pastDataSource.sort = this.sort;
+        this.pendingDataSource.sort = this.pendingSort;
+        this.pastDataSource.sort = this.pastSort;
 
         this.requestsLoading = false;
       },
