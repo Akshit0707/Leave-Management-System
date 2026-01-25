@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { RegisterComponent } from './pages/register/register.component';
+import { AdminComponent } from './pages/admin/admin.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MyLeavesComponent } from './pages/my-leaves/my-leaves.component';
 import { CreateLeaveComponent } from './pages/create-leave/create-leave.component';
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'my-leaves', component: MyLeavesComponent, canActivate: [authGuard] },
   { path: 'create-leave', component: CreateLeaveComponent, canActivate: [authGuard] },
   { path: 'pending-leaves', component: PendingLeavesComponent, canActivate: [authGuard, managerGuard] },
+  { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' }
 ];

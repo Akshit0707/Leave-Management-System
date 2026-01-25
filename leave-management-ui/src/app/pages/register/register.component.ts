@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
+import { UserService } from '../../services/user';
 
 @Component({
   selector: 'app-register',
@@ -11,7 +12,7 @@ import { Auth } from '../../services/auth';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
@@ -21,8 +22,27 @@ export class RegisterComponent {
   managerId: number | null = null;
   error: string = '';
   isLoading: boolean = false;
+  managers: any[] = [];
 
-  constructor(private authService: Auth, private router: Router) {}
+
+  constructor(private authService: Auth, private userService: UserService, private router: Router) {}
+
+  ngOnInit() {
+    if (this.role === 'Employee') {
+      this.fetchManagers();
+    }
+  }
+
+  fetchManagers() {
+    this.userService.getManagers().subscribe({
+      next: (data) => {
+        this.managers = data;
+      },
+      error: (err) => {
+        this.managers = [];
+      }
+    });
+  }
 
   register() {
     // Validation
@@ -50,6 +70,7 @@ export class RegisterComponent {
 
     this.isLoading = true;
     this.error = '';
+
 
     // Set managerId to null if Manager is selected
     const managerId = this.role === 'Manager' ? null : this.managerId;
@@ -81,5 +102,14 @@ export class RegisterComponent {
         this.isLoading = false;
       }
     });
+  }
+
+  // When role changes, update manager list
+  onRoleChange() {
+    if (this.role === 'Employee') {
+      this.fetchManagers();
+    } else {
+      this.managerId = null;
+    }
   }
 }

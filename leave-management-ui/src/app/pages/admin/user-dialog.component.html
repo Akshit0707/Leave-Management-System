@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>{{ data.isEdit ? 'Edit User' : 'Add User' }}</h2>
+<form [formGroup]="form" (ngSubmit)="save()" style="min-width:300px;max-width:400px;">
+  <div class="form-group">
+    <label>First Name</label>
+    <input formControlName="firstName" type="text" required />
+  </div>
+  <div class="form-group">
+    <label>Last Name</label>
+    <input formControlName="lastName" type="text" required />
+  </div>
+  <div class="form-group">
+    <label>Email</label>
+    <input formControlName="email" type="email" required />
+  </div>
+  <div class="form-group">
+    <label>Role</label>
+    <mat-select formControlName="role">
+      <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
+    </mat-select>
+  </div>
+  <div class="form-group" *ngIf="form.get('role')?.value === 'Employee'">
+    <label>Manager</label>
+    <mat-select formControlName="managerId">
+      <mat-option [value]="null">-- No Manager --</mat-option>
+      <mat-option *ngFor="let m of managers" [value]="m.id">{{ m.name }} ({{ m.email }})</mat-option>
+    </mat-select>
+  </div>
+  <div style="margin-top:18px;display:flex;gap:12px;justify-content:flex-end;">
+    <button mat-button type="button" (click)="close()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">{{ data.isEdit ? 'Update' : 'Add' }}</button>
+  </div>
+</form>
