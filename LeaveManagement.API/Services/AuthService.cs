@@ -41,11 +41,13 @@ public class AuthService : IAuthService
             .ToListAsync<object>();
     }
 
-    public async Task<bool> RejectPasswordResetAsync(int requestId)
+    public async Task<bool> RejectPasswordResetAsync(int requestId, string? comment = null)
     {
         var request = await _db.PasswordResetRequests.FindAsync(requestId);
         if (request == null || request.IsCompleted) return false;
         request.IsRejected = true;
+        if (!string.IsNullOrWhiteSpace(comment))
+            request.NewPassword = comment; // Store comment in NewPassword for now, or add a new column for comments
         await _db.SaveChangesAsync();
         return true;
     }
@@ -172,12 +174,14 @@ public class AuthService : IAuthService
         return await _db.PasswordResetRequests.Where(r => !r.IsApproved && !r.IsCompleted).ToListAsync();
     }
 
-    public async Task<bool> ApprovePasswordResetAsync(int requestId)
+    public async Task<bool> ApprovePasswordResetAsync(int requestId, string? comment = null)
     {
         var request = await _db.PasswordResetRequests.FindAsync(requestId);
         if (request == null || request.IsCompleted) return false;
         request.IsApproved = true;
         request.ApprovedAt = DateTime.UtcNow;
+        if (!string.IsNullOrWhiteSpace(comment))
+            request.NewPassword = comment; // Store comment in NewPassword for now, or add a new column for comments
         await _db.SaveChangesAsync();
         return true;
     }

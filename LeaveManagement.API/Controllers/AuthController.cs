@@ -24,9 +24,9 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("reject-password-reset")]
-    public async Task<IActionResult> RejectPasswordReset([FromBody] int requestId)
+    public async Task<IActionResult> RejectPasswordReset([FromBody] PasswordResetActionDto dto)
     {
-        var result = await _auth.RejectPasswordResetAsync(requestId);
+        var result = await _auth.RejectPasswordResetAsync(dto.RequestId, dto.Comment);
         if (!result) return BadRequest("Could not reject request.");
         return Ok(new { message = "Request rejected." });
     }
@@ -39,9 +39,9 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("approve-password-reset")]
-    public async Task<IActionResult> ApprovePasswordReset([FromBody] int requestId)
+    public async Task<IActionResult> ApprovePasswordReset([FromBody] PasswordResetActionDto dto)
     {
-        var result = await _auth.ApprovePasswordResetAsync(requestId);
+        var result = await _auth.ApprovePasswordResetAsync(dto.RequestId, dto.Comment);
         if (!result) return BadRequest("Could not approve request.");
         return Ok(new { message = "Request approved." });
     }
