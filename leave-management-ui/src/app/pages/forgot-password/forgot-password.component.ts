@@ -5,6 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
 import { PasswordResetService } from '../../services/password-reset.service';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 interface PasswordResetRequest {
@@ -18,7 +23,16 @@ interface PasswordResetRequest {
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSnackBarModule
+  ],
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.css']
 })
@@ -35,7 +49,11 @@ export class ForgotPasswordComponent {
   passwordStrengthLabel: string = '';
   step: number = 1; // 1: request, 2: pending, 3: reset, 4: done
 
-  constructor(private authService: Auth, private passwordResetService: PasswordResetService) {}
+  constructor(
+    private authService: Auth,
+    private passwordResetService: PasswordResetService,
+    private snackBar: MatSnackBar
+  ) {}
 
   requestReset() {
     if (!this.email) {
@@ -43,16 +61,40 @@ export class ForgotPasswordComponent {
       return;
     }
     this.isLoading = true;
-    this.authService.requestPasswordReset(this.email).subscribe({
-      next: () => {
-        this.message = 'Request submitted. Please wait until admin approves your request.';
-        this.isLoading = false;
-        this.step = 2;
+    // Check for existing pending request first
+    this.passwordResetService.getLatestResetRequest(this.email).subscribe({
+      next: (req: PasswordResetRequest | undefined) => {
+        if (req && !req.isCompleted && !req.isRejected && !req.isApproved) {
+          // Pending request exists
+          this.isLoading = false;
+          this.showPopup('Request already in review. Please wait for admin approval.');
+          return;
+        }
+        // No pending request, proceed
+        this.authService.requestPasswordReset(this.email).subscribe({
+          next: () => {
+            this.message = 'Request submitted. Please wait until admin approves your request.';
+            this.isLoading = false;
+            this.step = 2;
+          },
+          error: () => {
+            this.message = 'Failed to submit request. Try again.';
+            this.isLoading = false;
+          }
+        });
       },
       error: () => {
-        this.message = 'Failed to submit request. Try again.';
+        this.message = 'Failed to check existing requests. Try again.';
         this.isLoading = false;
       }
+    });
+  }
+
+  showPopup(msg: string) {
+    this.snackBar.open(msg, 'Close', {
+      duration: 4000,
+      verticalPosition: 'top',
+      panelClass: ['snackbar-warning']
     });
   }
 
@@ -66,15 +108,14 @@ export class ForgotPasswordComponent {
       next: (req: PasswordResetRequest | undefined) => {
         if (req && req.isApproved && !req.isCompleted) {
           this.resetRequestId = req.id;
-          this.step = 3;
+          this.message = 'approved';
+          setTimeout(() => { this.step = 3; }, 1000);
         } else if (req && req.isRejected) {
-          this.message = 'Your request was rejected. You can submit a new request.';
-          this.step = 1;
+          this.message = 'rejected';
         } else if (req && !req.isApproved) {
-          this.message = 'Your request is still pending admin approval.';
+          this.message = '';
         } else {
-          this.message = 'No pending request found. Please submit a new request.';
-          this.step = 1;
+          this.message = '';
         }
         this.isLoading = false;
       },
