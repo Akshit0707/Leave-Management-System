@@ -1,4 +1,3 @@
-
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -153,10 +152,10 @@ public class AuthService : IAuthService
 
     public async Task<bool> RequestPasswordResetAsync(string email)
     {
+        Console.WriteLine($"[DEBUG] Attempting password reset for: {email} at {DateTime.UtcNow}");
         if (string.IsNullOrWhiteSpace(email)) return false;
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) return false;
-        // Always allow new request, regardless of previous requests
         var request = new PasswordResetRequest
         {
             Email = email,
@@ -168,6 +167,7 @@ public class AuthService : IAuthService
         };
         await _db.PasswordResetRequests.AddAsync(request);
         await _db.SaveChangesAsync();
+        Console.WriteLine($"[DEBUG] Password reset request saved for: {email} at {DateTime.UtcNow}");
         return true;
     }
 
