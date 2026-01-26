@@ -27,12 +27,13 @@ export class ForgotPasswordComponent {
   email: string = '';
   message: string = '';
   isLoading: boolean = false;
-  requestSubmitted: boolean = false;
-  showResetPopup: boolean = false;
   resetRequestId: number | null = null;
   newPassword: string = '';
   confirmPassword: string = '';
   resetError: string = '';
+  passwordStrength: string = '';
+  passwordStrengthLabel: string = '';
+  step: number = 1; // 1: request, 2: pending, 3: reset, 4: done
 
   constructor(private authService: Auth, private router: Router, private passwordResetService: PasswordResetService) {}
 
@@ -42,23 +43,26 @@ export class ForgotPasswordComponent {
       return;
     }
     this.isLoading = true;
-    // Check for existing approved request
     this.passwordResetService.getLatestResetRequest(this.email).subscribe({
       next: (req: PasswordResetRequest | undefined) => {
         if (req && req.isApproved && !req.isCompleted) {
-          this.showResetPopup = true;
           this.resetRequestId = req.id;
+          this.isLoading = false;
+          this.step = 3;
+        } else if (req && req.isRejected) {
+          this.message = 'Your previous request was rejected. You can submit a new request.';
           this.isLoading = false;
         } else if (req && !req.isApproved) {
           this.message = 'Your request is still pending admin approval.';
           this.isLoading = false;
+          this.step = 2;
         } else {
           // No request or completed/rejected, submit new request
           this.authService.requestPasswordReset(this.email).subscribe({
             next: () => {
               this.message = 'Request submitted. Please wait until admin approves your request.';
               this.isLoading = false;
-              this.requestSubmitted = true;
+              this.step = 2;
             },
             error: () => {
               this.message = 'Failed to submit request. Try again.';
@@ -66,6 +70,35 @@ export class ForgotPasswordComponent {
             }
           });
         }
+      },
+      error: () => {
+        this.message = 'Failed to check request status. Try again.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  checkApproval() {
+    if (!this.email) {
+      this.message = 'Please enter your email.';
+      return;
+    }
+    this.isLoading = true;
+    this.passwordResetService.getLatestResetRequest(this.email).subscribe({
+      next: (req: PasswordResetRequest | undefined) => {
+        if (req && req.isApproved && !req.isCompleted) {
+          this.resetRequestId = req.id;
+          this.step = 3;
+        } else if (req && req.isRejected) {
+          this.message = 'Your request was rejected. You can submit a new request.';
+          this.step = 1;
+        } else if (req && !req.isApproved) {
+          this.message = 'Your request is still pending admin approval.';
+        } else {
+          this.message = 'No pending request found. Please submit a new request.';
+          this.step = 1;
+        }
+        this.isLoading = false;
       },
       error: () => {
         this.message = 'Failed to check request status. Try again.';
@@ -91,8 +124,7 @@ export class ForgotPasswordComponent {
     this.isLoading = true;
     this.authService.completePasswordReset(this.resetRequestId, this.newPassword).subscribe({
       next: () => {
-        this.showResetPopup = false;
-        this.message = 'Password reset successful. You can now log in with your new password.';
+        this.step = 4;
         this.isLoading = false;
         this.newPassword = '';
         this.confirmPassword = '';
@@ -102,5 +134,19 @@ export class ForgotPasswordComponent {
         this.isLoading = false;
       }
     });
+  }
+
+  checkPasswordStrength() {
+    const pwd = this.newPassword || '';
+    if (pwd.length < 6) {
+      this.passwordStrength = 'weak';
+      this.passwordStrengthLabel = 'Weak';
+    } else if (pwd.match(/[A-Z]/) && pwd.match(/[0-9]/) && pwd.length >= 8) {
+      this.passwordStrength = 'strong';
+      this.passwordStrengthLabel = 'Strong';
+    } else {
+      this.passwordStrength = 'medium';
+      this.passwordStrengthLabel = 'Medium';
+    }
   }
 }
