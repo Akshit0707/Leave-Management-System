@@ -92,4 +92,26 @@ public class AppDbContext : DbContext
             }
         }
     }
+
+    public async Task<bool> AddPasswordResetRequestAsync(string email)
+    {
+        var request = new PasswordResetRequest
+        {
+            Email = email,
+            RequestedAt = DateTime.UtcNow
+        };
+
+        try
+        {
+            await PasswordResetRequests.AddAsync(request);
+            await SaveChangesAsync();
+            Console.WriteLine($"[DEBUG] Password reset request saved for: {email} at {DateTime.UtcNow}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Failed to save password reset request: {ex.Message}");
+            return false;
+        }
+    }
 }
