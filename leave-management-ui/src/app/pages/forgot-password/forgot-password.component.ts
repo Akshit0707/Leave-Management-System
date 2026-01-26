@@ -43,34 +43,14 @@ export class ForgotPasswordComponent {
       return;
     }
     this.isLoading = true;
-    this.passwordResetService.getLatestResetRequest(this.email).subscribe({
-      next: (req: PasswordResetRequest | undefined) => {
-        if (req && req.isApproved && !req.isCompleted) {
-          this.resetRequestId = req.id;
-          this.isLoading = false;
-          this.step = 3;
-        } else if (req && !req.isApproved && !req.isCompleted && !req.isRejected) {
-          // Pending request exists
-          this.message = 'Your request is still pending admin approval.';
-          this.isLoading = false;
-          this.step = 2;
-        } else {
-          // Allow new request if previous is rejected or completed
-          this.authService.requestPasswordReset(this.email).subscribe({
-            next: () => {
-              this.message = 'Request submitted. Please wait until admin approves your request.';
-              this.isLoading = false;
-              this.step = 2;
-            },
-            error: () => {
-              this.message = 'Failed to submit request. Try again.';
-              this.isLoading = false;
-            }
-          });
-        }
+    this.authService.requestPasswordReset(this.email).subscribe({
+      next: () => {
+        this.message = 'Request submitted. Please wait until admin approves your request.';
+        this.isLoading = false;
+        this.step = 2;
       },
       error: () => {
-        this.message = 'Failed to check request status. Try again.';
+        this.message = 'Failed to submit request. Try again.';
         this.isLoading = false;
       }
     });
