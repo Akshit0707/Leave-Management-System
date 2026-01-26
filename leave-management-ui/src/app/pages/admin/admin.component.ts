@@ -11,6 +11,7 @@ import { UserDialogComponent } from './user-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { AdminPasswordResetsComponent } from './admin-password-resets.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
@@ -27,7 +28,8 @@ import { AdminPasswordResetsComponent } from './admin-password-resets.component'
     MatDialogModule,
     UserDialogComponent,
     MatProgressSpinnerModule,
-    AdminPasswordResetsComponent
+    AdminPasswordResetsComponent,
+    RouterModule
   ]
 })
 export class AdminComponent implements OnInit {
