@@ -132,8 +132,9 @@ export class DashboardComponent implements OnInit {
 
     this.leaveService.getAllLeaves().subscribe({
       next: (allLeaves) => {
-        const pending = allLeaves.filter(l => l.status === 'Pending');
-        const past = allLeaves.filter(l => l.status !== 'Pending');
+        // status: 0 = Pending, 1 = Approved, 2 = Rejected
+        const pending = allLeaves.filter(l => l.status === 0 || l.status === 'Pending');
+        const past = allLeaves.filter(l => l.status !== 0 && l.status !== 'Pending');
 
         this.pendingDataSource.data = pending;
         this.pastDataSource.data = past;
