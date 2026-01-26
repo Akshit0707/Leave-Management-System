@@ -31,7 +31,9 @@ export class AdminPasswordResetsComponent implements OnInit {
     this.isLoading = true;
     this.http.get<any[]>(`${environment.apiUrl}/api/auth/all-password-resets`).subscribe({
       next: (data) => {
+        console.log('Password reset requests from backend:', data);
         this.requests = data.map(r => ({ ...r, status: r.status || 'pending' }));
+        console.log('Requests mapped for display:', this.requests);
         this.isLoading = false;
         this.error = '';
       },

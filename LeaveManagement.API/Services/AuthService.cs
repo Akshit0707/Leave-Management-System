@@ -156,13 +156,15 @@ public class AuthService : IAuthService
         if (string.IsNullOrWhiteSpace(email)) return false;
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) return false;
+        // Always allow new request, regardless of previous requests
         var request = new PasswordResetRequest
         {
             Email = email,
             UserId = user.Id,
             RequestedAt = DateTime.UtcNow,
             IsApproved = false,
-            IsCompleted = false
+            IsCompleted = false,
+            IsRejected = false
         };
         await _db.PasswordResetRequests.AddAsync(request);
         await _db.SaveChangesAsync();

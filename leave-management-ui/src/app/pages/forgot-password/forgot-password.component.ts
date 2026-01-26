@@ -49,15 +49,13 @@ export class ForgotPasswordComponent {
           this.resetRequestId = req.id;
           this.isLoading = false;
           this.step = 3;
-        } else if (req && req.isRejected) {
-          this.message = 'Your previous request was rejected. You can submit a new request.';
-          this.isLoading = false;
-        } else if (req && !req.isApproved) {
+        } else if (req && !req.isApproved && !req.isCompleted && !req.isRejected) {
+          // Pending request exists
           this.message = 'Your request is still pending admin approval.';
           this.isLoading = false;
           this.step = 2;
         } else {
-          // No request or completed/rejected, submit new request
+          // Allow new request if previous is rejected or completed
           this.authService.requestPasswordReset(this.email).subscribe({
             next: () => {
               this.message = 'Request submitted. Please wait until admin approves your request.';

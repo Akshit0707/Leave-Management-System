@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './services/auth.guard';
 import { ManagerGuard } from './services/manager.guard';
+import { AdminGuard } from './services/admin.guard';
 
 export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent) },
@@ -12,6 +13,6 @@ export const routes: Routes = [
   { path: 'my-leaves', loadComponent: () => import('./pages/my-leaves/my-leaves.component').then(m => m.MyLeavesComponent), canActivate: [AuthGuard] },
   { path: 'create-leave', loadComponent: () => import('./pages/create-leave/create-leave.component').then(m => m.CreateLeaveComponent), canActivate: [AuthGuard] },
   { path: 'pending-leaves', loadComponent: () => import('./pages/pending-leaves/pending-leaves.component').then(m => m.PendingLeavesComponent), canActivate: [AuthGuard, ManagerGuard] },
-  { path: 'admin', loadComponent: () => import('./pages/admin/admin.component').then(m => m.AdminComponent), canActivate: [AuthGuard] },
+  { path: 'admin', loadComponent: () => import('./pages/admin/admin.component').then(m => m.AdminComponent), canActivate: [AuthGuard, AdminGuard] },
   { path: '**', redirectTo: '' }
 ];
