@@ -7,12 +7,11 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-password-resets',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatSnackBarModule, FormsModule, MatProgressSpinnerModule, RouterModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatSnackBarModule, FormsModule, MatProgressSpinnerModule],
   templateUrl: './admin-password-resets.component.html',
   styleUrl: './admin-password-resets.component.css'
 })
