@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
 import { PasswordResetService } from '../../services/password-reset.service';
 
@@ -35,7 +35,7 @@ export class ForgotPasswordComponent {
   passwordStrengthLabel: string = '';
   step: number = 1; // 1: request, 2: pending, 3: reset, 4: done
 
-  constructor(private authService: Auth, private router: Router, private passwordResetService: PasswordResetService) {}
+  constructor(private authService: Auth, private passwordResetService: PasswordResetService) {}
 
   requestReset() {
     if (!this.email) {
