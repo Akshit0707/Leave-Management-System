@@ -19,4 +19,7 @@ public class PasswordResetRequest
 
     // New column for storing the new password during reset
     public string? NewPassword { get; set; }
+
+    // New column for storing admin comment on rejection/approval
+    public string? Comment { get; set; }
 }

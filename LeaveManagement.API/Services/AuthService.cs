@@ -47,7 +47,7 @@ public class AuthService : IAuthService
         if (request == null || request.IsCompleted) return false;
         request.IsRejected = true;
         if (!string.IsNullOrWhiteSpace(comment))
-            request.NewPassword = comment; // Store comment in NewPassword for now, or add a new column for comments
+            request.Comment = comment; // Store comment in the new Comment property
         await _db.SaveChangesAsync();
         return true;
     }

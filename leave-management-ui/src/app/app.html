@@ -3,15 +3,20 @@
     <div class="navbar-container">
       <h1 class="navbar-title">Leave Management System</h1>
       <div class="navbar-links">
-        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="exactOptions">Dashboard</a>
-        <div *ngIf="!isManager()" class="employee-nav-links">
-          <a routerLink="/create-leave" routerLinkActive="active">
-            <span class="nav-icon">📝</span> Request Leave
-          </a>
-          <a routerLink="/my-leaves" routerLinkActive="active">
-            <span class="nav-icon">📋</span> My Leaves
-          </a>
-        </div>
+        <ng-container *ngIf="!authService.isAdmin(); else adminNav">
+          <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="exactOptions">Dashboard</a>
+          <div *ngIf="!isManager()" class="employee-nav-links">
+            <a routerLink="/create-leave" routerLinkActive="active">
+              <span class="nav-icon">📝</span> Request Leave
+            </a>
+            <a routerLink="/my-leaves" routerLinkActive="active">
+              <span class="nav-icon">📋</span> My Leaves
+            </a>
+          </div>
+        </ng-container>
+        <ng-template #adminNav>
+          <!-- Only show logout for admin -->
+        </ng-template>
         <button class="logout-btn" (click)="logout()">Logout</button>
       </div>
     </div>
