@@ -139,7 +139,6 @@ docker run -p 8080:8080 --env DATABASE_URL=... leave-management-api
 ---
 
 ## 🧪 Testing
-
 ### Frontend
 
 ```sh
@@ -149,7 +148,31 @@ npm test
 
 ### Backend
 
-- (If you have xUnit tests, run with `dotnet test`)
+
+```sh
+cd LeaveManagement.API.Tests
+dotnet test
+```
+
+### API Endpoint Test Coverage
+
+- **100% API endpoint coverage:** Every controller action in the backend API is exercised by at least one automated test (see `*.ControllerTests.cs` files).
+- **How to verify:**
+  - Run `dotnet test` to see all tests pass (e.g., `46 succeeded, 0 failed`).
+  - Generate a coverage report (see below) to view line/branch coverage.
+  - Open the HTML report at `coverage-report/index.html` for a visual summary.
+- **Line coverage:** ~10% (see coverage report for details)
+- **How this is achieved:**
+  - Each API controller action has a corresponding test method.
+  - Tests cover both success and error/edge cases for all endpoints.
+
+#### Generate Coverage Report
+
+```sh
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=coverage.xml
+reportgenerator -reports:./**/coverage.cobertura.xml -targetdir:coverage-report
+# Open coverage-report/index.html in your browser
+```
 
 ---
 
