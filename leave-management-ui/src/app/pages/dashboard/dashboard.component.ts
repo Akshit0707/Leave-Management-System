@@ -76,6 +76,8 @@ export class DashboardComponent implements OnInit {
   requestsLoading = true;
   requestsError: string | null = null;
 
+  pendingAll: any[] = [];
+
   constructor(
     private leaveService: LeaveService,
     private authService: Auth,
@@ -142,11 +144,10 @@ export class DashboardComponent implements OnInit {
 
     this.leaveService.getAllLeaves().subscribe({
       next: (allLeaves) => {
-        console.log('All leaves from backend:', allLeaves);
         // status: 0 = Pending, 1 = Approved, 2 = Rejected
         const pending = allLeaves.filter(l => l.status === 0 || l.status === 'Pending');
         const past = allLeaves.filter(l => l.status !== 0 && l.status !== 'Pending');
-        console.log('Pending requests:', pending);
+        this.pendingAll = pending;
         this.pendingDataSource.data = pending;
         this.pastDataSource.data = past;
 
@@ -166,7 +167,7 @@ export class DashboardComponent implements OnInit {
   }
 
   applyManagerFilters(): void {
-    let filtered = this.pendingDataSource.data;
+    let filtered = this.pendingAll;
     if (this.managerFilter.status) {
       filtered = filtered.filter(l => l.status === this.managerFilter.status);
     }
@@ -184,7 +185,7 @@ export class DashboardComponent implements OnInit {
 
   resetManagerFilters(): void {
     this.managerFilter = { status: '', userName: '', fromDate: '', toDate: '' };
-    this.loadManagerRequests();
+    this.pendingDataSource.data = this.pendingAll;
   }
 
   approve(req: any): void {

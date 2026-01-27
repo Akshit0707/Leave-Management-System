@@ -642,33 +642,62 @@
 .dashboard-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: 20px;
   align-items: center;
-  background: #f8fafc;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(80,112,255,0.07);
-  padding: 18px 24px 10px 24px;
-  margin-bottom: 18px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(80,112,255,0.10);
+  padding: 28px 36px 18px 36px;
+  margin-bottom: 28px;
+  border: 1.5px solid #e0e7ff;
 }
 .filter-field {
-  min-width: 160px;
-  max-width: 220px;
-  flex: 1 1 160px;
+  min-width: 170px;
+  max-width: 240px;
+  flex: 1 1 170px;
+  margin-right: 10px;
 }
 .dashboard-filters button {
-  min-width: 100px;
-  font-weight: 600;
-  font-size: 15px;
-  margin-top: 4px;
+  min-width: 120px;
+  font-weight: 700;
+  font-size: 17px;
+  margin-top: 6px;
+  margin-right: 10px;
+  border-radius: 10px;
+  padding: 12px 0;
+  box-shadow: 0 1px 6px rgba(80,112,255,0.09);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.dashboard-filters .mat-form-field {
+  background: #f8fafc;
+  border-radius: 10px;
+}
+.dashboard-filters .mat-form-field-appearance-fill .mat-form-field-flex {
+  background: #f3f4f6;
+  border-radius: 10px;
+}
+.dashboard-filters .mat-form-field-appearance-fill .mat-form-field-infix {
+  padding: 12px 0;
+}
+.dashboard-filters .mat-select {
+  background: #fff;
+  border-radius: 10px;
+}
+.dashboard-filters .mat-input-element {
+  background: #fff;
+  border-radius: 10px;
 }
 @media (max-width: 900px) {
   .dashboard-filters {
     flex-direction: column;
-    gap: 10px;
-    padding: 12px 8px 8px 8px;
+    gap: 12px;
+    padding: 18px 10px 10px 10px;
   }
   .filter-field {
-    min-width: 120px;
+    min-width: 130px;
     max-width: 100%;
+    margin-right: 0;
   }
 }
