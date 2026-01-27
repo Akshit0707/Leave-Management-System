@@ -1,22 +1,82 @@
-<div class="landing-container">
-  <mat-card class="landing-card">
-    <mat-card-header>
-      <mat-card-title>
-        <span class="landing-title">Leave Management System</span>
-      </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p class="landing-description">Effortlessly manage your leaves, approvals, and requests in a modern, secure, and collaborative workspace.</p>
-      <ul class="landing-features">
-        <li><span class="feature-icon">✔️</span> Fast, secure login & registration</li>
-        <li><span class="feature-icon">✔️</span> Role-based access for employees, managers, and admins</li>
-        <li><span class="feature-icon">✔️</span> Real-time leave tracking & notifications</li>
-        <li><span class="feature-icon">✔️</span> Beautiful, responsive UI</li>
-      </ul>
-    </mat-card-content>
-    <mat-card-actions class="landing-actions">
-      <button mat-raised-button color="primary" routerLink="/login">Login</button>
-      <button mat-stroked-button color="accent" routerLink="/register">Register</button>
-    </mat-card-actions>
-  </mat-card>
-</div>
+<nav class="landing-navbar">
+  <div class="landing-navbar-content">
+    <div class="landing-navbar-brand">
+      <span class="material-icons landing-navbar-logo">event_available</span>
+      <span class="landing-navbar-title">Leave Management System</span>
+    </div>
+    <div class="landing-navbar-actions">
+      <button mat-button color="primary" routerLink="/login"><span class="material-icons">login</span> Login</button>
+      <button mat-stroked-button color="accent" routerLink="/register"><span class="material-icons">person_add</span> Register</button>
+    </div>
+  </div>
+</nav>
+
+<main class="landing-main">
+  <section class="modern-hero">
+    <div class="modern-hero-bg"></div>
+    <div class="modern-hero-content">
+      <div class="modern-hero-left">
+        <h1 class="modern-hero-title">Effortless Leave Management for Modern Teams</h1>
+        <p class="modern-hero-desc">Empower your organization with seamless leave tracking, approvals, and real-time notifications. Built for teams of all sizes, with a focus on security, clarity, and productivity.</p>
+        <div class="modern-hero-actions">
+          <a routerLink="/register" class="modern-cta-btn">Get Started</a>
+          <a routerLink="/login" class="modern-cta-link">Already have an account?</a>
+        </div>
+      </div>
+      <div class="modern-hero-right">
+        <img src="assets/image2.png" alt="Team Collaboration" class="modern-hero-illustration" />
+      </div>
+    </div>
+  </section>
+
+  <section class="modern-features">
+    <h2 class="modern-features-title">Why Choose Us?</h2>
+    <div class="modern-features-grid">
+      <div class="modern-feature-card">
+        <span class="material-icons modern-feature-icon">login</span>
+        <h3>Fast, Secure Login</h3>
+        <p>Quick and secure authentication for all users.</p>
+      </div>
+      <div class="modern-feature-card">
+        <span class="material-icons modern-feature-icon">supervisor_account</span>
+        <h3>Role-Based Access</h3>
+        <p>Employees, managers, and admins get tailored access and controls.</p>
+      </div>
+      <div class="modern-feature-card">
+        <span class="material-icons modern-feature-icon">notifications_active</span>
+        <h3>Real-Time Notifications</h3>
+        <p>Stay updated with instant leave status and reminders.</p>
+      </div>
+      <div class="modern-feature-card">
+        <span class="material-icons modern-feature-icon">analytics</span>
+        <h3>Detailed Analytics</h3>
+        <p>Track leave history and gain insights with beautiful reports.</p>
+      </div>
+      <div class="modern-feature-card">
+        <span class="material-icons modern-feature-icon">check_circle</span>
+        <h3>Easy Approvals</h3>
+        <p>Managers can approve or reject requests in one click.</p>
+      </div>
+      <div class="modern-feature-card">
+        <span class="material-icons modern-feature-icon">devices</span>
+        <h3>Responsive Design</h3>
+        <p>Works beautifully on desktop, tablet, and mobile.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="landing-footer">
+  <div class="landing-footer-content">
+    <div class="landing-footer-brand">
+      <span class="material-icons landing-footer-logo">event_available</span>
+      <span class="landing-footer-title">Leave Management System</span>
+    </div>
+    <div class="landing-footer-links">
+      <span>Contact: <a href="mailto:support@leavemanagement.com">support@leavemanagement.com</a></span>
+      <span>|</span>
+      <span>Support: <a href="tel:+1800123456">+91 8888888888</a></span>
+    </div>
+    <div class="landing-footer-copy">&copy; 2026 Leave Management System. All rights reserved.</div>
+  </div>
+</footer>

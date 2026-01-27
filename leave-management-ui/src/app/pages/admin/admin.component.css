@@ -1,3 +1,62 @@
+.add-user-btn {
+  background: linear-gradient(90deg, #6366f1 0%, #4f46e5 100%);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 22px 8px 18px;
+  font-size: 1.08rem;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 2px 8px rgba(80,112,255,0.13);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.add-user-btn .material-icons {
+  font-size: 1.3em;
+  margin-right: 2px;
+}
+.add-user-btn:hover {
+  background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%);
+  box-shadow: 0 4px 16px rgba(80,112,255,0.18);
+}
+
+.actions-btn-group {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+  box-shadow: 0 1px 4px rgba(80,112,255,0.07);
+}
+.action-btn .material-icons {
+  font-size: 1.1em;
+}
+.action-btn.edit {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+.action-btn.edit:hover {
+  background: #c7d2fe;
+}
+.action-btn.delete {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.action-btn.delete:hover {
+  background: #fecaca;
+}
 /* Use dashboard styles for consistency */
 
 /* Admin Panel Modular Styles */

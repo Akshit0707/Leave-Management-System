@@ -15,6 +15,9 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,7 +34,10 @@ import { FormsModule } from '@angular/forms';
     MatPaginatorModule,
     MatSortModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
@@ -57,6 +63,10 @@ export class DashboardComponent implements OnInit {
     'id', 'userName', 'dates', 'days', 'reason', 'status',
     'managerComments', 'createdAt', 'reviewedAt'
   ];
+
+  // Filter states
+  managerFilter = { status: '', userName: '', fromDate: '', toDate: '' };
+  employeeFilter = { status: '', fromDate: '', toDate: '' };
 
   @ViewChild('pendingPaginator') pendingPaginator!: MatPaginator;
   @ViewChild('pastPaginator') pastPaginator!: MatPaginator;
@@ -153,6 +163,28 @@ export class DashboardComponent implements OnInit {
         this.requestsLoading = false;
       }
     });
+  }
+
+  applyManagerFilters(): void {
+    let filtered = this.pendingDataSource.data;
+    if (this.managerFilter.status) {
+      filtered = filtered.filter(l => l.status === this.managerFilter.status);
+    }
+    if (this.managerFilter.userName) {
+      filtered = filtered.filter(l => l.userName?.toLowerCase().includes(this.managerFilter.userName.toLowerCase()));
+    }
+    if (this.managerFilter.fromDate) {
+      filtered = filtered.filter(l => new Date(l.startDate) >= new Date(this.managerFilter.fromDate));
+    }
+    if (this.managerFilter.toDate) {
+      filtered = filtered.filter(l => new Date(l.endDate) <= new Date(this.managerFilter.toDate));
+    }
+    this.pendingDataSource.data = filtered;
+  }
+
+  resetManagerFilters(): void {
+    this.managerFilter = { status: '', userName: '', fromDate: '', toDate: '' };
+    this.loadManagerRequests();
   }
 
   approve(req: any): void {

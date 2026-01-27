@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { LeaveService } from '../../services/leave';
 
 @Component({
   selector: 'app-my-leaves',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './my-leaves.component.html',
   styleUrl: './my-leaves.component.css'
 })
@@ -14,6 +15,8 @@ export class MyLeavesComponent implements OnInit {
   isLoading: boolean = true;
   deleteConfirmId: number | null = null;
   isDeletingId: number | null = null;
+  filter = { status: '', fromDate: '', toDate: '' };
+  filteredLeaves: any[] = [];
 
   constructor(private leaveService: LeaveService) {}
 
@@ -26,12 +29,32 @@ export class MyLeavesComponent implements OnInit {
     this.leaveService.getMyLeaves().subscribe({
       next: (data) => {
         this.leaves = data;
+        this.filteredLeaves = data;
         this.isLoading = false;
       },
       error: () => {
         this.isLoading = false;
       }
     });
+  }
+
+  applyFilters() {
+    let filtered = this.leaves;
+    if (this.filter.status) {
+      filtered = filtered.filter(l => l.status === this.filter.status);
+    }
+    if (this.filter.fromDate) {
+      filtered = filtered.filter(l => new Date(l.startDate) >= new Date(this.filter.fromDate));
+    }
+    if (this.filter.toDate) {
+      filtered = filtered.filter(l => new Date(l.endDate) <= new Date(this.filter.toDate));
+    }
+    this.filteredLeaves = filtered;
+  }
+
+  resetFilters() {
+    this.filter = { status: '', fromDate: '', toDate: '' };
+    this.filteredLeaves = this.leaves;
   }
 
   getStatusClass(status: string): string {

@@ -1,43 +1,56 @@
-<div class="user-dialog-container">
-  <h2 mat-dialog-title class="user-dialog-title">{{ isEdit ? 'Edit User' : 'Add User' }}</h2>
+<div class="user-dialog-container modern-form-bg">
+  <h2 mat-dialog-title class="user-dialog-title">
+    <span class="material-icons user-dialog-title-icon">{{ isEdit ? 'edit' : 'person_add' }}</span>
+    {{ isEdit ? 'Edit User' : 'Add User' }}
+  </h2>
   <form [formGroup]="form" (ngSubmit)="update()" class="user-dialog-form">
     <div class="user-dialog-fields">
-      <mat-form-field appearance="outline" class="user-dialog-field">
+      <mat-form-field appearance="outline" class="user-dialog-field rounded-field">
         <mat-label>First Name</mat-label>
         <input matInput formControlName="firstName" required>
+        <span matPrefix class="material-icons input-icon">person</span>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="user-dialog-field">
+      <mat-form-field appearance="outline" class="user-dialog-field rounded-field">
         <mat-label>Last Name</mat-label>
         <input matInput formControlName="lastName" required>
+        <span matPrefix class="material-icons input-icon">badge</span>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="user-dialog-field">
+      <mat-form-field appearance="outline" class="user-dialog-field rounded-field">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" required>
+        <span matPrefix class="material-icons input-icon">email</span>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="user-dialog-field" *ngIf="!isEdit">
+      <mat-form-field appearance="outline" class="user-dialog-field rounded-field" *ngIf="!isEdit">
         <mat-label>Password</mat-label>
         <input matInput formControlName="password" type="password" required minlength="6">
+        <span matPrefix class="material-icons input-icon">lock</span>
         <mat-hint>At least 6 characters</mat-hint>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="user-dialog-field">
+      <mat-form-field appearance="outline" class="user-dialog-field rounded-field">
         <mat-label>Role</mat-label>
         <mat-select formControlName="role" required>
           <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
         </mat-select>
+        <span matPrefix class="material-icons input-icon">supervisor_account</span>
       </mat-form-field>
       <ng-container *ngIf="form.get('role')?.value !== 'Manager' && form.get('role')?.value !== 'Admin'">
-        <mat-form-field appearance="outline" class="user-dialog-field">
+        <mat-form-field appearance="outline" class="user-dialog-field rounded-field">
           <mat-label>Manager</mat-label>
           <mat-select formControlName="managerId">
             <mat-option [value]="null">None</mat-option>
             <mat-option *ngFor="let m of managers" [value]="m.id">{{ m.name }}</mat-option>
           </mat-select>
+          <span matPrefix class="material-icons input-icon">groups</span>
         </mat-form-field>
       </ng-container>
     </div>
     <div class="user-dialog-actions">
-      <button mat-stroked-button color="primary" type="button" (click)="close()">Cancel</button>
-      <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">{{ isEdit ? 'Update' : 'Add' }}</button>
+      <button mat-stroked-button color="primary" type="button" (click)="close()">
+        <span class="material-icons">close</span> Cancel
+      </button>
+      <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid">
+        <span class="material-icons">{{ isEdit ? 'save' : 'person_add' }}</span> {{ isEdit ? 'Update' : 'Add' }}
+      </button>
     </div>
   </form>
 </div>

@@ -223,3 +223,68 @@ tr:hover {
     font-size: 0.65rem;
   }
 }
+
+.leaves-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  background: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(80,112,255,0.07);
+  padding: 18px 24px 10px 24px;
+  margin-bottom: 18px;
+}
+.leaves-filter-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  max-width: 220px;
+  flex: 1 1 140px;
+}
+.filter-label {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #6366f1;
+  margin-bottom: 4px;
+}
+.filter-select, .filter-input {
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1.5px solid #e0e7ff;
+  font-size: 15px;
+  background: #fff;
+  color: #374151;
+  margin-bottom: 2px;
+}
+.filter-btn {
+  min-width: 90px;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 4px;
+  margin-right: 8px;
+  border-radius: 8px;
+  padding: 7px 0;
+  box-shadow: 0 1px 4px rgba(80,112,255,0.07);
+  border: none;
+  cursor: pointer;
+}
+.filter-btn.apply {
+  background: linear-gradient(90deg, #6366f1 0%, #4f46e5 100%);
+  color: #fff;
+}
+.filter-btn.reset {
+  background: #e0e7ff;
+  color: #6366f1;
+}
+@media (max-width: 900px) {
+  .leaves-filters {
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 8px 8px 8px;
+  }
+  .leaves-filter-card {
+    min-width: 120px;
+    max-width: 100%;
+  }
+}

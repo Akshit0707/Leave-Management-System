@@ -14,13 +14,14 @@ mat-dialog-actions {
   margin-top: 10px;
 }
 
-.user-dialog-container {
+/* Modern dialog background */
+.user-dialog-container.modern-form-bg {
   padding: 32px 24px 16px 24px;
   min-width: 340px;
   max-width: 420px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  background: linear-gradient(135deg, #f8fafc 60%, #e0e7ff 100%);
+  border-radius: 22px;
+  box-shadow: 0 4px 24px rgba(80,112,255,0.13);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,9 +30,18 @@ mat-dialog-actions {
 .user-dialog-title {
   text-align: center;
   font-size: 1.7rem;
-  font-weight: 700;
+  font-weight: 800;
   margin-bottom: 18px;
-  color: #2d3a4a;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+.user-dialog-title-icon {
+  font-size: 2.1rem;
+  color: #6366f1;
+  margin-right: 2px;
 }
 
 .user-dialog-form {
@@ -50,10 +60,26 @@ mat-dialog-actions {
 .user-dialog-field {
   width: 100%;
 }
+.rounded-field .mat-form-field-outline {
+  border-radius: 12px !important;
+}
+.input-icon {
+  color: #6366f1;
+  margin-right: 4px;
+  font-size: 1.2em;
+}
 
 .user-dialog-actions {
   display: flex;
   justify-content: flex-end;
   gap: 16px;
   margin-top: 22px;
+}
+.user-dialog-actions button {
+  min-width: 110px;
+  font-weight: 700;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }

@@ -46,6 +46,32 @@
 
     <!-- MANAGER SECTION -->
     <div *ngIf="isManager">
+      <!-- FILTERS -->
+      <div class="dashboard-filters mat-elevation-z1">
+        <mat-form-field appearance="fill" class="filter-field">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="managerFilter.status">
+            <mat-option value="">All</mat-option>
+            <mat-option value="Pending">Pending</mat-option>
+            <mat-option value="Approved">Approved</mat-option>
+            <mat-option value="Rejected">Rejected</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="filter-field">
+          <mat-label>User</mat-label>
+          <input matInput [(ngModel)]="managerFilter.userName" placeholder="Search by user name">
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="filter-field">
+          <mat-label>From</mat-label>
+          <input matInput [(ngModel)]="managerFilter.fromDate" type="date">
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="filter-field">
+          <mat-label>To</mat-label>
+          <input matInput [(ngModel)]="managerFilter.toDate" type="date">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="applyManagerFilters()" style="margin-right:8px;">Apply</button>
+        <button mat-stroked-button color="accent" (click)="resetManagerFilters()">Reset</button>
+      </div>
       <h2 class="dashboard-title" style="margin-top:32px;">New Requests</h2>
       <mat-progress-spinner *ngIf="requestsLoading" mode="indeterminate" color="primary"></mat-progress-spinner>
       <div *ngIf="!requestsLoading && requestsError" class="error-message">{{ requestsError }}</div>

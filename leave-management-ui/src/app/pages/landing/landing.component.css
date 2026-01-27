@@ -1,20 +1,397 @@
-.landing-container {
+
+body, .landing-root {
   min-height: 100vh;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ef 100%);
+}
+
+.landing-navbar {
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(80,112,255,0.07);
+  padding: 0.7rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.landing-navbar-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.2rem;
+}
+.landing-navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.landing-navbar-logo {
+  font-size: 2.1rem;
+  color: #6366f1;
+  background: #e0e7ff;
+  border-radius: 0.7rem;
+  padding: 0.2rem 0.4rem;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.10);
+}
+.landing-navbar-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #4f46e5;
+  letter-spacing: 0.01em;
+}
+.landing-navbar-actions button {
+  margin-left: 0.7rem;
+  font-weight: 700;
+  border-radius: 2rem;
+  font-size: 1.05rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+
+.landing-main {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+/* Modern Hero Section */
+.modern-hero {
+  position: relative;
+  width: 100%;
+  min-height: 420px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #e0e7ff 0%, #f0f4f8 100%);
+  background: none;
+  margin-bottom: 2.5rem;
+}
+.modern-hero-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(120deg, #e0e7ff 0%, #f0f4ff 100%);
+  z-index: 0;
+}
+.modern-hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 1100px;
+  width: 100%;
+  gap: 2.5rem;
+  padding: 2.5rem 2rem 2rem 2rem;
+}
+.modern-hero-left {
+  flex: 1 1 0;
+  min-width: 320px;
+}
+.modern-hero-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #2563eb;
+  margin-bottom: 1.1rem;
+  line-height: 1.15;
+}
+.modern-hero-desc {
+  color: #64748b;
+  font-size: 1.18rem;
+  margin-bottom: 2.1rem;
+  max-width: 500px;
+}
+.modern-hero-actions {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+}
+.modern-cta-btn {
+  background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
+  color: #fff;
+  padding: 0.85rem 2.2rem;
+  border-radius: 2rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  box-shadow: 0 2px 12px rgba(56,189,248,0.10);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.modern-cta-btn:hover {
+  background: linear-gradient(90deg, #1d4ed8 0%, #0ea5e9 100%);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 6px 24px rgba(56,189,248,0.18);
+}
+.modern-cta-link {
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+.modern-cta-link:hover {
+  color: #0ea5e9;
+}
+.modern-hero-right {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modern-hero-illustration {
+  width: 340px;
+  max-width: 100%;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.13);
+  background: #fff;
 }
 
-.landing-card {
+/* Features Section */
+.modern-features {
+  width: 100%;
+  background: none;
+  padding: 0 0 2.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.modern-features-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #2563eb;
+  margin-bottom: 2.2rem;
+  text-align: center;
+}
+.modern-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  max-width: 1100px;
+  width: 100%;
+}
+.modern-feature-card {
   background: #fff;
-  padding: 3rem 2.5rem;
   border-radius: 1.5rem;
+  box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.10);
+  padding: 2.1rem 1.5rem 1.5rem 1.5rem;
+  text-align: center;
+  border: 1.5px solid #e0e7ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.modern-feature-card:hover {
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  transform: translateY(-4px) scale(1.03);
+}
+.modern-feature-icon {
+  font-size: 2.5rem;
+  color: #38bdf8;
+  margin-bottom: 0.7rem;
+}
+.modern-feature-card h3 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 0.5rem;
+}
+.modern-feature-card p {
+  color: #64748b;
+  font-size: 1.01rem;
+}
+
+@media (max-width: 900px) {
+  .modern-hero-content {
+    flex-direction: column;
+    gap: 2.5rem;
+    padding: 2.5rem 0.5rem 2rem 0.5rem;
+  }
+  .modern-hero-left, .modern-hero-right {
+    min-width: 0;
+    width: 100%;
+  }
+  .modern-hero-illustration {
+    width: 90vw;
+    max-width: 340px;
+  }
+  .modern-features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+}
+.landing-hero {
+  width: 100%;
+  padding: 4.5rem 0 2.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+.landing-hero-content {
+  max-width: 600px;
+  background: #fff;
+  border-radius: 2.2rem;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.13);
+  padding: 3.2rem 2.7rem 2.5rem 2.7rem;
+  text-align: center;
+  border: 1.5px solid #e0e7ff;
+}
+.landing-hero-title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #3b82f6;
+  margin-bottom: 1.1rem;
+}
+.landing-hero-desc {
+  color: #64748b;
+  font-size: 1.15rem;
+  margin-bottom: 2.1rem;
+}
+.landing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  text-align: left;
+}
+.landing-features li {
+  margin-bottom: 0.7rem;
+  font-size: 1.05rem;
+  color: #374151;
+  display: flex;
+  align-items: center;
+}
+.feature-icon {
+  margin-right: 0.5rem;
+  color: #22c55e;
+  font-size: 1.2rem;
+}
+
+.landing-footer {
+  width: 100%;
+  background: #f1f5f9;
+  padding: 1.5rem 0 0.7rem 0;
+  border-top: 1.5px solid #e0e7ff;
+  margin-top: 2.5rem;
+}
+.landing-footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+.landing-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #6366f1;
+}
+.landing-footer-logo {
+  font-size: 1.3rem;
+  color: #6366f1;
+  background: #e0e7ff;
+  border-radius: 0.5rem;
+  padding: 0.1rem 0.3rem;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.10);
+}
+.landing-footer-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #6366f1;
+}
+.landing-footer-links {
+  display: flex;
+  gap: 1.1rem;
+  color: #64748b;
+  font-size: 1rem;
+}
+.landing-footer-links a {
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 600;
+}
+.landing-footer-copy {
+  color: #94a3b8;
+  font-size: 0.97rem;
+  margin-top: 0.2rem;
+}
+
+.landing-card.modern-landing-card {
+  background: #fff;
+  padding: 3.2rem 2.7rem 2.5rem 2.7rem;
+  border-radius: 2.2rem;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
   text-align: center;
-  max-width: 440px;
+  max-width: 480px;
   width: 100%;
   animation: fadeIn 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1.5px solid #e0e7ff;
+}
+
+.landing-logo-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.7rem;
+}
+.landing-logo-icon {
+  font-size: 3.2rem;
+  color: #6366f1;
+  background: #e0e7ff;
+  border-radius: 1.2rem;
+  padding: 0.5rem 0.7rem;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.10);
+}
+.landing-subtitle {
+  font-size: 1.1rem;
+  color: #6366f1;
+  font-weight: 600;
+  margin-top: 0.2rem;
+  margin-bottom: 0.7rem;
+  letter-spacing: 0.01em;
+}
+.landing-quote {
+  background: #f1f5f9;
+  border-radius: 1.1rem;
+  margin: 1.7rem 0 0.5rem 0;
+  padding: 1.1rem 1.2rem 0.7rem 1.2rem;
+  font-size: 1.01rem;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.06);
+}
+.landing-quote-icon {
+  color: #6366f1;
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
+}
+.landing-quote-text {
+  font-style: italic;
+  margin-bottom: 0.3rem;
+}
+.landing-quote-author {
+  font-size: 0.97rem;
+  color: #64748b;
+  margin-left: 0.2rem;
+}
+.landing-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 1.08rem;
+  font-weight: 700;
+  border-radius: 2rem;
+  padding: 0.7rem 2.1rem;
+  min-width: 130px;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.08);
 }
 
 @keyframes fadeIn {

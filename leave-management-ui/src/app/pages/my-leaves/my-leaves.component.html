@@ -14,6 +14,28 @@
   </div>
 
   <div *ngIf="!isLoading && leaves.length > 0" class="leaves-table-container">
+    <!-- FILTERS -->
+    <div class="leaves-filters">
+      <div class="leaves-filter-card">
+        <label for="status" class="filter-label">Status</label>
+        <select id="status" [(ngModel)]="filter.status" class="filter-select">
+          <option value="">All</option>
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+      <div class="leaves-filter-card">
+        <label for="fromDate" class="filter-label">From</label>
+        <input id="fromDate" type="date" [(ngModel)]="filter.fromDate" class="filter-input">
+      </div>
+      <div class="leaves-filter-card">
+        <label for="toDate" class="filter-label">To</label>
+        <input id="toDate" type="date" [(ngModel)]="filter.toDate" class="filter-input">
+      </div>
+      <button class="filter-btn apply" (click)="applyFilters()">Apply</button>
+      <button class="filter-btn reset" (click)="resetFilters()">Reset</button>
+    </div>
     <table class="leaves-table">
       <thead>
         <tr>
@@ -29,7 +51,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let leave of leaves" [ngClass]="'status-' + getStatusClass(leave.status)">
+        <tr *ngFor="let leave of filteredLeaves" [ngClass]="'status-' + getStatusClass(leave.status)">
           <td>{{ leave.id }}</td>
           <td>{{ leave.startDate | date: 'MMM dd, yyyy' }}</td>
           <td>{{ leave.endDate | date: 'MMM dd, yyyy' }}</td>

@@ -638,3 +638,37 @@
     width: 100%;
   }
 }
+
+.dashboard-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  background: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(80,112,255,0.07);
+  padding: 18px 24px 10px 24px;
+  margin-bottom: 18px;
+}
+.filter-field {
+  min-width: 160px;
+  max-width: 220px;
+  flex: 1 1 160px;
+}
+.dashboard-filters button {
+  min-width: 100px;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 4px;
+}
+@media (max-width: 900px) {
+  .dashboard-filters {
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 8px 8px 8px;
+  }
+  .filter-field {
+    min-width: 120px;
+    max-width: 100%;
+  }
+}

@@ -1,42 +1,32 @@
+<app-navbar></app-navbar>
 <div class="login-container">
   <div class="login-card">
-    <h2>Leave Management System</h2>
-    <p class="subtitle">Login to your account</p>
-
-    <form (ngSubmit)="login()">
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input 
-          type="email" 
-          id="email" 
-          [(ngModel)]="email" 
-          name="email"
-          placeholder="Enter your email"
-          required
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input 
-          type="password" 
-          id="password" 
-          [(ngModel)]="password" 
-          name="password"
-          placeholder="Enter your password"
-          required
-        />
-      </div>
-
-      <div *ngIf="error" class="error-message">{{ error }}</div>
-
-      <button type="submit" [disabled]="isLoading" class="login-btn btn">
+    <h2>Login to your account</h2>
+    <form (ngSubmit)="login()" autocomplete="off">
+      <app-form-field
+        [label]="'Email'"
+        [type]="'email'"
+        [placeholder]="'Enter your email'"
+        [required]="true"
+        [control]="emailControl"
+        [error]="emailError"
+      ></app-form-field>
+      <app-form-field
+        [label]="'Password'"
+        [type]="'password'"
+        [placeholder]="'Enter your password'"
+        [required]="true"
+        [control]="passwordControl"
+        [error]="passwordError"
+      ></app-form-field>
+      <app-error-message [error]="error"></app-error-message>
+      <button mat-raised-button color="primary" type="submit" [disabled]="isLoading" class="login-btn">
         {{ isLoading ? 'Logging in...' : 'Login' }}
       </button>
-
       <div class="register-link">
-        Don't have an account? <a routerLink="/register" class="register-btn btn" style="margin-left: 0.5rem;">Register</a>
-        <br>
+        Don't have an account?
+        <a routerLink="/register" class="register-btn btn" style="margin-left: 0.5rem;">Register</a>
+        <br />
         <a routerLink="/forgot-password" class="forgot-link btn" style="margin-top: 1rem;">Forgot Password?</a>
       </div>
     </form>

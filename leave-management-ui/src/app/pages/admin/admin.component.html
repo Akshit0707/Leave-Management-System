@@ -9,7 +9,9 @@
   <div class="admin-section-card mat-elevation-z2">
     <div class="admin-section-header">
       <h2 class="admin-section-title">User Management</h2>
-      <button class="approve-btn" (click)="addUser()">Add User</button>
+      <button class="add-user-btn" (click)="addUser()">
+        <span class="material-icons">person_add</span> Add User
+      </button>
     </div>
     <div *ngIf="isLoading" class="dashboard-loading">
       <mat-progress-spinner mode="indeterminate" color="primary"></mat-progress-spinner>
@@ -51,8 +53,16 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let u">
-            <button class="approve-btn" (click)="editUser(u)">Edit</button>
-            <button class="reject-btn" (click)="deleteUser(u)">Delete</button>
+            <div class="actions-btn-group">
+              <button class="action-btn edit" (click)="editUser(u)">
+                <span class="material-icons">edit</span>
+                Edit
+              </button>
+              <button class="action-btn delete" (click)="deleteUser(u)">
+                <span class="material-icons">delete</span>
+                Delete
+              </button>
+            </div>
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="usersColumns"></tr>
