@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="3ef11ce6-5301-462b-a0ce-63813491019d" name="@Akshits-MacBook-Air 2026-01-27 23:33:56" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-01-27T23:33:56.0028830+05:30" queuing="2026-01-27T23:33:56.0028830+05:30" start="2026-01-27T23:33:54.3116810+05:30" finish="2026-01-27T23:33:56.0055860+05:30" />
+  <TestSettings name="default" id="92c21f63-d3f5-40cc-984d-76d6396d9830">
+    <Deployment runDeploymentRoot="_Akshits-MacBook-Air_2026-01-27_23_33_56" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="c427beb4-dc19-460d-9077-382649f1d2ed" testId="30a3d895-4a71-692e-20e9-34d1120d5410" testName="LeaveManagement.API.Tests.UnitTest1.Test1" computerName="Akshits-MacBook-Air" duration="00:00:00.0022123" startTime="2026-01-27T23:33:55.1610960+05:30" endTime="2026-01-27T23:33:55.1614670+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c427beb4-dc19-460d-9077-382649f1d2ed" />
+    <UnitTestResult executionId="655df422-2ab0-411b-b279-4e41a62c9b16" testId="83f9808b-fe57-5617-b96e-84e887142b1c" testName="LeaveManagement.API.Tests.LeaveRequestAuthorizationTests.OnlyManagerCanApproveOrReject" computerName="Akshits-MacBook-Air" duration="00:00:00.0064560" startTime="2026-01-27T23:33:55.1604140+05:30" endTime="2026-01-27T23:33:55.1679130+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="655df422-2ab0-411b-b279-4e41a62c9b16" />
+    <UnitTestResult executionId="2cb53612-69a3-4b63-9d7d-40a6e8fe2c18" testId="1e30f5c4-28a9-e4f4-f611-eda055b90f24" testName="LeaveManagement.API.Tests.LeavesControllerTests.Mine_ReturnsOkWithList" computerName="Akshits-MacBook-Air" duration="00:00:00.0636305" startTime="2026-01-27T23:33:55.1610750+05:30" endTime="2026-01-27T23:33:55.2155030+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2cb53612-69a3-4b63-9d7d-40a6e8fe2c18" />
+    <UnitTestResult executionId="e8fb1c94-7a44-40e9-99aa-f0349ade5712" testId="199bac0d-b187-72c7-df77-be02b69a57c1" testName="LeaveManagement.API.Tests.AuthServiceTests.RegisterAsync_ShouldReturnNull_WhenEmailExists" computerName="Akshits-MacBook-Air" duration="00:00:00.3418495" startTime="2026-01-27T23:33:55.1611060+05:30" endTime="2026-01-27T23:33:55.4937180+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e8fb1c94-7a44-40e9-99aa-f0349ade5712" />
+    <UnitTestResult executionId="19836fce-9846-432d-892b-dba69a9d034a" testId="4bec3e6e-487a-f2e8-e306-3b7ff92b882a" testName="LeaveManagement.API.Tests.AuthServiceTests.RegisterAsync_ShouldCreateUser_WhenValid" computerName="Akshits-MacBook-Air" duration="00:00:00.2465051" startTime="2026-01-27T23:33:55.4941560+05:30" endTime="2026-01-27T23:33:55.7402820+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="19836fce-9846-432d-892b-dba69a9d034a" />
+    <UnitTestResult executionId="32bc38c9-dd55-4a92-a8ad-454dadc7a616" testId="13dd1053-f2a0-560f-12c2-6992bc86c949" testName="LeaveManagement.API.Tests.LeavesControllerTests.Create_ReturnsOk_WhenLeaveCreated" computerName="Akshits-MacBook-Air" duration="00:00:00.0037962" startTime="2026-01-27T23:33:55.2159640+05:30" endTime="2026-01-27T23:33:55.2194280+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="32bc38c9-dd55-4a92-a8ad-454dadc7a616" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="LeaveManagement.API.Tests.AuthServiceTests.RegisterAsync_ShouldReturnNull_WhenEmailExists" storage="/users/akshitarora/desktop/leavemanagementsystem/leavemanagement.api.tests/bin/debug/net10.0/leavemanagement.api.tests.dll" id="199bac0d-b187-72c7-df77-be02b69a57c1">
+      <Execution id="e8fb1c94-7a44-40e9-99aa-f0349ade5712" />
+      <TestMethod codeBase="/Users/akshitarora/Desktop/LeaveManagementSystem/LeaveManagement.API.Tests/bin/Debug/net10.0/LeaveManagement.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="LeaveManagement.API.Tests.AuthServiceTests" name="RegisterAsync_ShouldReturnNull_WhenEmailExists" />
+    </UnitTest>
+    <UnitTest name="LeaveManagement.API.Tests.AuthServiceTests.RegisterAsync_ShouldCreateUser_WhenValid" storage="/users/akshitarora/desktop/leavemanagementsystem/leavemanagement.api.tests/bin/debug/net10.0/leavemanagement.api.tests.dll" id="4bec3e6e-487a-f2e8-e306-3b7ff92b882a">
+      <Execution id="19836fce-9846-432d-892b-dba69a9d034a" />
+      <TestMethod codeBase="/Users/akshitarora/Desktop/LeaveManagementSystem/LeaveManagement.API.Tests/bin/Debug/net10.0/LeaveManagement.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="LeaveManagement.API.Tests.AuthServiceTests" name="RegisterAsync_ShouldCreateUser_WhenValid" />
+    </UnitTest>
+    <UnitTest name="LeaveManagement.API.Tests.LeavesControllerTests.Mine_ReturnsOkWithList" storage="/users/akshitarora/desktop/leavemanagementsystem/leavemanagement.api.tests/bin/debug/net10.0/leavemanagement.api.tests.dll" id="1e30f5c4-28a9-e4f4-f611-eda055b90f24">
+      <Execution id="2cb53612-69a3-4b63-9d7d-40a6e8fe2c18" />
+      <TestMethod codeBase="/Users/akshitarora/Desktop/LeaveManagementSystem/LeaveManagement.API.Tests/bin/Debug/net10.0/LeaveManagement.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="LeaveManagement.API.Tests.LeavesControllerTests" name="Mine_ReturnsOkWithList" />
+    </UnitTest>
+    <UnitTest name="LeaveManagement.API.Tests.LeavesControllerTests.Create_ReturnsOk_WhenLeaveCreated" storage="/users/akshitarora/desktop/leavemanagementsystem/leavemanagement.api.tests/bin/debug/net10.0/leavemanagement.api.tests.dll" id="13dd1053-f2a0-560f-12c2-6992bc86c949">
+      <Execution id="32bc38c9-dd55-4a92-a8ad-454dadc7a616" />
+      <TestMethod codeBase="/Users/akshitarora/Desktop/LeaveManagementSystem/LeaveManagement.API.Tests/bin/Debug/net10.0/LeaveManagement.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="LeaveManagement.API.Tests.LeavesControllerTests" name="Create_ReturnsOk_WhenLeaveCreated" />
+    </UnitTest>
+    <UnitTest name="LeaveManagement.API.Tests.LeaveRequestAuthorizationTests.OnlyManagerCanApproveOrReject" storage="/users/akshitarora/desktop/leavemanagementsystem/leavemanagement.api.tests/bin/debug/net10.0/leavemanagement.api.tests.dll" id="83f9808b-fe57-5617-b96e-84e887142b1c">
+      <Execution id="655df422-2ab0-411b-b279-4e41a62c9b16" />
+      <TestMethod codeBase="/Users/akshitarora/Desktop/LeaveManagementSystem/LeaveManagement.API.Tests/bin/Debug/net10.0/LeaveManagement.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="LeaveManagement.API.Tests.LeaveRequestAuthorizationTests" name="OnlyManagerCanApproveOrReject" />
+    </UnitTest>
+    <UnitTest name="LeaveManagement.API.Tests.UnitTest1.Test1" storage="/users/akshitarora/desktop/leavemanagementsystem/leavemanagement.api.tests/bin/debug/net10.0/leavemanagement.api.tests.dll" id="30a3d895-4a71-692e-20e9-34d1120d5410">
+      <Execution id="c427beb4-dc19-460d-9077-382649f1d2ed" />
+      <TestMethod codeBase="/Users/akshitarora/Desktop/LeaveManagementSystem/LeaveManagement.API.Tests/bin/Debug/net10.0/LeaveManagement.API.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="LeaveManagement.API.Tests.UnitTest1" name="Test1" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="30a3d895-4a71-692e-20e9-34d1120d5410" executionId="c427beb4-dc19-460d-9077-382649f1d2ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="83f9808b-fe57-5617-b96e-84e887142b1c" executionId="655df422-2ab0-411b-b279-4e41a62c9b16" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e30f5c4-28a9-e4f4-f611-eda055b90f24" executionId="2cb53612-69a3-4b63-9d7d-40a6e8fe2c18" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="199bac0d-b187-72c7-df77-be02b69a57c1" executionId="e8fb1c94-7a44-40e9-99aa-f0349ade5712" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4bec3e6e-487a-f2e8-e306-3b7ff92b882a" executionId="19836fce-9846-432d-892b-dba69a9d034a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13dd1053-f2a0-560f-12c2-6992bc86c949" executionId="32bc38c9-dd55-4a92-a8ad-454dadc7a616" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="6" executed="6" passed="6" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.0)
+[xUnit.net 00:00:00.04]   Discovering: LeaveManagement.API.Tests
+[xUnit.net 00:00:00.06]   Discovered:  LeaveManagement.API.Tests
+[xUnit.net 00:00:00.07]   Starting:    LeaveManagement.API.Tests
+Extracted User ID: 1
+=== CREATE LEAVE REQUEST STARTED ===
+Extracted User ID: 1
+User ID from token: 1
+Leave created successfully: 0
+[xUnit.net 00:00:00.67]   Finished:    LeaveManagement.API.Tests
+</StdOut>
+    </Output>
+    <CollectorDataEntries>
+      <Collector agentName="Akshits-MacBook-Air" uri="datacollector://microsoft/CoverletCodeCoverage/1.0" collectorDisplayName="XPlat code coverage">
+        <UriAttachments>
+          <UriAttachment>
+            <A href="Akshits-MacBook-Air/coverage.cobertura.xml"></A>
+          </UriAttachment>
+        </UriAttachments>
+      </Collector>
+    </CollectorDataEntries>
+  </ResultSummary>
+</TestRun>
