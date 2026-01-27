@@ -17,6 +17,19 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './admin-password-resets.component.css'
 })
 export class AdminPasswordResetsComponent implements OnInit {
+    delete(requestId: number) {
+      if (!confirm('Are you sure you want to delete this password reset request?')) return;
+      this.http.delete(`${environment.apiUrl}/api/auth/delete-password-reset/${requestId}`).subscribe({
+        next: () => {
+          this.snackBar.open('Request deleted', 'Close', { duration: 2000 });
+          this.loadRequests();
+        },
+        error: (err) => {
+          this.snackBar.open('Delete failed', 'Close', { duration: 3000 });
+          this.error = 'Delete failed';
+        }
+      });
+    }
   displayedColumns: string[] = ['email', 'requestedAt', 'status', 'actions'];
   requests: any[] = [];
   isLoading = false;
