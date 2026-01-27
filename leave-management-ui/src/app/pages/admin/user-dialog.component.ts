@@ -42,6 +42,7 @@ export class UserDialogComponent {
       firstName: [user.firstName || '', Validators.required],
       lastName: [user.lastName || '', Validators.required],
       email: [user.email || '', [Validators.required, Validators.email]],
+      password: ['', this.isEdit ? [] : [Validators.required, Validators.minLength(6)]],
       role: [user.role ? user.role : (user.role === 0 ? 'Employee' : user.role === 1 ? 'Manager' : user.role === 2 ? 'Admin' : 'Employee'), Validators.required],
       managerId: [user.managerId ?? null]
     });

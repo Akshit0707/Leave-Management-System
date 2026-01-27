@@ -30,7 +30,8 @@ export class AdminPasswordResetsComponent implements OnInit {
         }
       });
     }
-  displayedColumns: string[] = ['email', 'requestedAt', 'status', 'actions'];
+    displayedColumns: string[] = ['email', 'requestedAt', 'status', 'actions'];
+    displayedColumnsCommentOnly: string[] = ['email', 'requestedAt', 'status', 'comment'];
   requests: any[] = [];
   isLoading = false;
   error: string = '';
@@ -45,9 +46,12 @@ export class AdminPasswordResetsComponent implements OnInit {
     this.isLoading = true;
     this.http.get<any[]>(`${environment.apiUrl}/api/auth/all-password-resets`).subscribe({
       next: (data) => {
-        console.log('Password reset requests from backend:', data);
-        this.requests = data.map(r => ({ ...r, status: r.status || 'pending' }));
-        console.log('Requests mapped for display:', this.requests);
+        // Always use backend's comment for non-pending, and clear local input for pending
+        this.requests = data.map(r => ({
+          ...r,
+          status: r.status || 'pending',
+          comment: r.comment || ''
+        }));
         this.isLoading = false;
         this.error = '';
       },

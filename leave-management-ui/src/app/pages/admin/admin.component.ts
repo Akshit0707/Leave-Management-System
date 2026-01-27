@@ -76,13 +76,14 @@ export class AdminComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.userService.addUser(result).subscribe({
+        // Use registerUser to add user with password
+        this.userService.registerUser(result).subscribe({
           next: () => {
-            this.snackBar.open('User added!', 'Close', { duration: 2000, panelClass: 'snackbar-success' });
+            this.snackBar.open('User added! The user can now log in with the credentials.', 'Close', { duration: 2000, panelClass: 'snackbar-success' });
             this.loadUsers();
           },
           error: (err) => {
-            this.snackBar.open('Add failed: ' + (err.error || err.message), 'Close', { duration: 3000, panelClass: 'snackbar-error' });
+            this.snackBar.open('Add failed: ' + (err.error?.message || err.error || err.message), 'Close', { duration: 3000, panelClass: 'snackbar-error' });
           }
         });
       }

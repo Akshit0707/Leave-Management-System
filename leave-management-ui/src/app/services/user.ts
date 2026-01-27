@@ -1,3 +1,7 @@
+  registerUser(user: any): Observable<any> {
+    // Calls the backend /api/auth/register endpoint
+    return this.http.post<any>(`${environment.apiUrl}/api/auth/register`, user);
+  }
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
