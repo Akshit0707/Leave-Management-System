@@ -1,27 +1,34 @@
-
 using LeaveManagement.API.DTOs;
 using LeaveManagement.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LeaveManagement.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class AuthController : ControllerBase
+namespace LeaveManagement.API.Controllers
 {
-    private readonly IAuthService _auth;
-
-    public AuthController(IAuthService auth)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
     {
-        _auth = auth;
-    }
+        private readonly IAuthService _auth;
 
-    [HttpGet("all-password-resets")]
-    public async Task<IActionResult> GetAllPasswordResets()
-    {
-        var requests = await _auth.GetAllPasswordResetRequestsAsync();
-        return Ok(requests);
-    }
+        public AuthController(IAuthService auth)
+        {
+            _auth = auth;
+        }
+
+        [HttpDelete("delete-password-reset/{requestId}")]
+        public async Task<IActionResult> DeletePasswordReset(int requestId)
+        {
+            var result = await _auth.DeletePasswordResetRequestAsync(requestId);
+            if (!result) return BadRequest("Could not delete request.");
+            return Ok(new { message = "Request deleted." });
+        }
+
+        [HttpGet("all-password-resets")]
+        public async Task<IActionResult> GetAllPasswordResets()
+        {
+            var requests = await _auth.GetAllPasswordResetRequestsAsync();
+            return Ok(requests);
+        }
 
     [HttpPost("reject-password-reset")]
     public async Task<IActionResult> RejectPasswordReset([FromBody] PasswordResetActionDto dto)
@@ -129,4 +136,5 @@ public class AuthController : ControllerBase
             return StatusCode(500, new { error = ex.Message });
         }
     }
+}
 }

@@ -1,26 +1,36 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using BCrypt.Net;
-using LeaveManagement.API.Data;
-using LeaveManagement.API.DTOs;
-using LeaveManagement.API.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
-namespace LeaveManagement.API.Services;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
+    using System.Text;
+    using BCrypt.Net;
+    using LeaveManagement.API.Data;
+    using LeaveManagement.API.DTOs;
+    using LeaveManagement.API.Models;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.IdentityModel.Tokens;
 
-public class AuthService : IAuthService
-{
-    private readonly AppDbContext _db;
-    private readonly IConfiguration _config;
-
-    public AuthService(AppDbContext db, IConfiguration config)
+    namespace LeaveManagement.API.Services
     {
-        _db = db;
-        _config = config;
-    }
+        public class AuthService : IAuthService
+        {
+            private readonly AppDbContext _db;
+            private readonly IConfiguration _config;
+
+            public AuthService(AppDbContext db, IConfiguration config)
+            {
+                _db = db;
+                _config = config;
+            }
+
+            public async Task<bool> DeletePasswordResetRequestAsync(int requestId)
+            {
+                var request = await _db.PasswordResetRequests.FindAsync(requestId);
+                if (request == null) return false;
+                _db.PasswordResetRequests.Remove(request);
+                await _db.SaveChangesAsync();
+                return true;
+            }
 
     public async Task<List<object>> GetAllPasswordResetRequestsAsync()
     {
@@ -201,3 +211,4 @@ public class AuthService : IAuthService
         return true;
     }
 }
+    }

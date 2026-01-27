@@ -1,16 +1,18 @@
 using LeaveManagement.API.DTOs;
 using LeaveManagement.API.Models;
 
-namespace LeaveManagement.API.Services;
-
-public interface IAuthService
+namespace LeaveManagement.API.Services
 {
-    Task<AuthResponse?> RegisterAsync(RegisterRequest request);
-    Task<AuthResponse?> LoginAsync(LoginRequest request);
-    Task<bool> RequestPasswordResetAsync(string email);
-    Task<List<PasswordResetRequest>> GetPendingPasswordResetRequestsAsync();
+    public interface IAuthService
+    {
+        Task<AuthResponse?> RegisterAsync(RegisterRequest request);
+        Task<AuthResponse?> LoginAsync(LoginRequest request);
+        Task<bool> RequestPasswordResetAsync(string email);
+        Task<List<PasswordResetRequest>> GetPendingPasswordResetRequestsAsync();
         Task<bool> ApprovePasswordResetAsync(int requestId, string? comment = null);
-    Task<bool> CompletePasswordResetAsync(int requestId, string newPassword);
-    Task<List<object>> GetAllPasswordResetRequestsAsync();
+        Task<bool> CompletePasswordResetAsync(int requestId, string newPassword);
+        Task<List<object>> GetAllPasswordResetRequestsAsync();
         Task<bool> RejectPasswordResetAsync(int requestId, string? comment = null);
+        Task<bool> DeletePasswordResetRequestAsync(int requestId);
+    }
 }
