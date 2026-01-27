@@ -15,7 +15,10 @@ import { MatButtonModule } from '@angular/material/button';
           <span class="navbar-title">Leave Management System</span>
         </div>
         <div class="navbar-actions">
-          <button mat-button color="primary" routerLink="/">Back to Home</button>
+          <button mat-raised-button color="primary" class="navbar-back-btn" routerLink="/">
+            <span class="material-icons" style="vertical-align: middle; margin-right: 6px; font-size: 1.2em;">arrow_back</span>
+            Back to Home
+          </button>
         </div>
       </div>
     </nav>

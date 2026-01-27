@@ -34,6 +34,7 @@ LeaveManagement.API/         # ASP.NET Core 8 backend API
 
 ---
 
+
 ## 📝 Features
 
 - User registration & login (Manager/Employee roles)
@@ -45,6 +46,27 @@ LeaveManagement.API/         # ASP.NET Core 8 backend API
 - Secure password hashing (BCrypt)
 - Automated database migrations on deploy
 - CORS and environment-based configuration
+
+### New & Improved Features (2026)
+
+- **Modernized UI/UX:**
+  - Consistent, professional design with improved button and navigation styling
+  - Responsive layout for all devices
+- **Enhanced Password Reset Flow:**
+  - Multi-step process: request, approval, reset, done
+  - Real-time status updates (pending, approved, rejected)
+  - Admin rejection/approval comments shown to user
+  - Clear feedback and actionable messages for all states
+- **Navigation Improvements:**
+  - Modern, visually prominent navbar with left-aligned title and right-aligned back button
+  - "Back to Home" and "Back to Login" buttons styled for clarity and accessibility
+- **Robust Status Handling:**
+  - UI always reflects the latest request status (pending, approved, rejected, completed)
+  - Admin comments and rejection reasons are clearly displayed
+- **General Polish:**
+  - Improved form layouts and field consistency
+  - Angular Material integration for a modern look
+  - Accessibility and usability enhancements
 
 ---
 

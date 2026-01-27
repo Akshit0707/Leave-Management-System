@@ -1,3 +1,7 @@
+// Helper to robustly check if a value is truthy for 'rejected' (handles boolean, number, string)
+function isRejected(val: any): boolean {
+  return val === true || val === 'true' || val === 1 || val === '1';
+}
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -12,21 +16,11 @@ export class PasswordResetService {
   getLatestResetRequest(email: string) {
     return this.http.get<any[]>(`${this.apiUrl}/all-password-resets`).pipe(
       map(requests => {
-        // Find the latest approved, not completed request for the given email
-        const approved = requests
-          .filter((r: any) => r.email === email && r.isApproved && !r.isCompleted)
+        // Always select the most recent request for the email
+        const all = requests
+          .filter((r: any) => r.email === email)
           .sort((a: any, b: any) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime());
-        if (approved.length > 0) return approved[0];
-        // Otherwise, return the latest pending (not rejected, not completed, not approved)
-        const pending = requests
-          .filter((r: any) => r.email === email && !r.isCompleted && !r.isRejected && !r.isApproved)
-          .sort((a: any, b: any) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime());
-        if (pending.length > 0) return pending[0];
-        // Otherwise, return the latest rejected
-        const rejected = requests
-          .filter((r: any) => r.email === email && r.isRejected)
-          .sort((a: any, b: any) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime());
-        if (rejected.length > 0) return rejected[0];
+        if (all.length > 0) return all[0];
         return undefined;
       })
     );
