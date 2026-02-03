@@ -4,8 +4,8 @@ using LeaveManagement.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LeaveManagement.API;
 
@@ -16,61 +16,70 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         /* =======================
-           SERVICES & JSON
+           CONTROLLERS & JSON
         ======================= */
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
             {
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 options.JsonSerializerOptions.Converters.Add(
                     new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
                 );
             });
 
         /* =======================
-           CORS
+           CORS (NETLIFY + LOCAL)
         ======================= */
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowAzureFrontend", policy =>
+            options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.WithOrigins(
-                    "https://purple-forest-05b8b3100.4.azurestaticapps.net",
-                    "http://localhost:4200"
-                )
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
+                policy
+                    .WithOrigins(
+                        "https://symphonious-biscotti-b6fc95.netlify.app", // 🔴 REPLACE with your Netlify URL
+                        "http://localhost:4200"               // Angular local dev
+                    )
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                // ❌ DO NOT use AllowCredentials() for JWT
             });
         });
 
         /* =======================
-           DATABASE (Switched to SQL Server)
+           DATABASE (AZURE SQL)
         ======================= */
-        // Azure App Service automatically injects connection strings 
-        // as environment variables prefixed with SQLAZURECONNSTR_
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-                               ?? Environment.GetEnvironmentVariable("SQLAZURECONNSTR_DefaultConnection");
+        var connectionString =
+            builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? Environment.GetEnvironmentVariable("SQLAZURECONNSTR_DefaultConnection");
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+            throw new InvalidOperationException("Database connection string not found.");
 
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(connectionString, sqlOptions => 
+        {
+            options.UseSqlServer(connectionString, sql =>
             {
-                // Recommended for Azure SQL to handle transient connection drops
-                sqlOptions.EnableRetryOnFailure(); 
-            }));
+                sql.EnableRetryOnFailure();
+            });
+        });
 
+        /* =======================
+           DEPENDENCY INJECTION
+        ======================= */
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<ILeaveService, LeaveService>();
 
         /* =======================
-           JWT AUTH
+           JWT AUTHENTICATION
         ======================= */
-        var jwtKey = builder.Configuration["Jwt:Key"]
-            ?? throw new InvalidOperationException("JWT Key missing from configuration");
+        var jwtKey = builder.Configuration["Jwt:Key"];
+        if (string.IsNullOrWhiteSpace(jwtKey))
+            throw new InvalidOperationException("JWT Key missing.");
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(o =>
+            .AddJwtBearer(options =>
             {
-                o.TokenValidationParameters = new TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
@@ -83,6 +92,10 @@ public class Program
             });
 
         builder.Services.AddAuthorization();
+
+        /* =======================
+           SWAGGER
+        ======================= */
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -94,23 +107,24 @@ public class Program
         using (var scope = app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            // This will now use the SQL Server provider
             db.Database.Migrate();
         }
 
         /* =======================
-           PIPELINE
+           MIDDLEWARE PIPELINE
         ======================= */
         app.UseSwagger();
         app.UseSwaggerUI();
 
         app.UseRouting();
-        app.UseCors("AllowAzureFrontend");
+
+        app.UseCors("AllowFrontend");
 
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
+
         app.MapGet("/health", () => Results.Ok("Healthy"));
 
         app.Run();
