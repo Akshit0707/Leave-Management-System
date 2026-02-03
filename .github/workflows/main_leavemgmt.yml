@@ -24,7 +24,6 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        # Removed self-contained flags to prevent permission issues
         run: dotnet publish -c Release -o ./publish
 
       - name: Upload artifact for deployment job
@@ -42,7 +41,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-          path: ./publish # Updated path to ensure we are in the right folder
+          path: . # We download the CONTENTS of the artifact to the current directory
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -50,10 +49,4 @@ jobs:
         with:
           app-name: 'leavemgmt'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./publish
-
-
-
-
-
-
+          package: . # Deploy everything in the current directory
