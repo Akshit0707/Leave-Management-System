@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - leavemgmt
+name: Build and deploy ASP.Net Core app to Azure Web App - leavemgmgt
 
 on:
   push:
@@ -18,14 +18,13 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x' # Matches your project target
+          dotnet-version: '8.x'
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        # Added --self-contained to prevent System.Runtime errors
-        run: dotnet publish -c Release -r linux-x64 --self-contained true -o ./publish
+        run: dotnet publish -c Release -o ./publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -48,10 +47,11 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'leavemgmt'
-          # This line uses the XML key you saved in GitHub Secrets
+          app-name: 'leavemgmgt'
+          # This replaces the need for "Azure Login"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
           
+
 
 
