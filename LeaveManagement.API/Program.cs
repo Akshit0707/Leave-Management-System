@@ -13,9 +13,14 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        // Fix for Postgres timestamp issues
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
         var builder = WebApplication.CreateBuilder(args);
+
+        /* =======================
+           SERVICES & JSON
+        ======================= */
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
             {
@@ -25,46 +30,24 @@ public class Program
             });
 
         /* =======================
-           RAILWAY PORT
-        ======================= */
-        var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-        builder.WebHost.ConfigureKestrel(o =>
-        {
-            o.ListenAnyIP(int.Parse(port));
-        });
-
-        /* =======================
-           CONFIG
-        ======================= */
-        builder.Configuration
-            .AddJsonFile("appsettings.json", optional: true)
-            .AddEnvironmentVariables();
-
-        /* =======================
-           CORS
+           CORS (Updated for Azure)
         ======================= */
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowNetlify", policy =>
+            options.AddPolicy("AllowAzureFrontend", policy =>
             {
                 policy.WithOrigins(
-                    "https://leavemgmtsy.netlify.app", // your actual Netlify site
+                    "https://purple-forest-05b8b3100.4.azurestaticapps.net", // Your Static Web App
                     "http://localhost:4200"
                 )
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials(); // Required if using HttpOnly cookies or specific Auth headers
             });
         });
 
         /* =======================
-           SERVICES
-        ======================= */
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
-        /* =======================
-           DATABASE (RAILWAY SAFE)
+           DATABASE
         ======================= */
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(GetConnectionString(builder)));
@@ -94,6 +77,8 @@ public class Program
             });
 
         builder.Services.AddAuthorization();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
 
         var app = builder.Build();
 
@@ -107,40 +92,40 @@ public class Program
         }
 
         /* =======================
-           PIPELINE
+           PIPELINE (Order is Crucial)
         ======================= */
+        // Always show Swagger in this project phase for debugging
         app.UseSwagger();
         app.UseSwaggerUI();
 
         app.UseRouting();
 
-        app.UseCors("AllowNetlify");
+        // Must be between UseRouting and UseAuthentication
+        app.UseCors("AllowAzureFrontend");
 
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
+        
+        // Health check endpoint to verify routing is working
         app.MapGet("/health", () => Results.Ok("Healthy"));
 
         app.Run();
     }
 
-    /* =======================
-       HELPER METHODS
-    ======================= */
     private static string GetConnectionString(WebApplicationBuilder builder)
     {
+        // Check for Azure App Service Environment Variable
         var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+        
         if (string.IsNullOrEmpty(databaseUrl))
-#pragma warning disable CS8603 // Possible null reference return.
-            return builder.Configuration.GetConnectionString("DefaultConnection");
-#pragma warning restore CS8603 // Possible null reference return.
+            return builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
 
-        // If it's already in ADO.NET format, just return it
         if (databaseUrl.Contains("Host="))
             return databaseUrl;
 
-        // Otherwise, parse the URL format
+        // Parse Railway-style URL if still using that format
         var uri = new Uri(databaseUrl);
         var userInfo = uri.UserInfo.Split(':');
         var csBuilder = new Npgsql.NpgsqlConnectionStringBuilder
@@ -150,7 +135,8 @@ public class Program
             Username = userInfo[0],
             Password = userInfo[1],
             Database = uri.AbsolutePath.TrimStart('/'),
-            SslMode = Npgsql.SslMode.Prefer
+            SslMode = Npgsql.SslMode.Prefer,
+            TrustServerCertificate = true // Often needed for cloud DBs
         };
         return csBuilder.ToString();
     }
