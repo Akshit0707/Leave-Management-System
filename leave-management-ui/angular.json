@@ -19,7 +19,7 @@
           "options": {
             "outputPath": "dist/leave-management-ui",
             "index": "src/index.html",
-            "browser": "src/main.ts",
+            "main": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/assets",
@@ -30,7 +30,6 @@
               "src/styles.css"
             ],
             "scripts": [],
-            "server": null,
             "prerender": false,
             "ssr": false
           },
