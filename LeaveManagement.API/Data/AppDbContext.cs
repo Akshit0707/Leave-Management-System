@@ -38,6 +38,10 @@ public class AppDbContext : DbContext
         {
             e.HasKey(x => x.Id);
             e.Property(x => x.Reason).IsRequired().HasMaxLength(500);
+            
+            // SQL Server specific: Ensure precision for dates
+            e.Property(x => x.StartDate).HasColumnType("datetime2");
+            e.Property(x => x.EndDate).HasColumnType("datetime2");
 
             e.HasOne(x => x.User)
              .WithMany(u => u.LeaveRequests)
@@ -50,7 +54,7 @@ public class AppDbContext : DbContext
         {
             e.HasKey(x => x.Id);
             e.Property(x => x.Email).IsRequired().HasMaxLength(100);
-            e.Property(x => x.RequestedAt).IsRequired();
+            e.Property(x => x.RequestedAt).IsRequired().HasColumnType("datetime2");
         });
     }
 
@@ -75,18 +79,14 @@ public class AppDbContext : DbContext
         {
             foreach (var property in entry.Properties)
             {
-                if (property.Metadata.ClrType == typeof(DateTime))
+                if (property.Metadata.ClrType == typeof(DateTime) || property.Metadata.ClrType == typeof(DateTime?))
                 {
-                    if (property.CurrentValue is DateTime dateTime && dateTime.Kind != DateTimeKind.Utc)
+                    if (property.CurrentValue is DateTime dt)
                     {
-                        property.CurrentValue = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
-                    }
-                }
-                else if (property.Metadata.ClrType == typeof(DateTime?))
-                {
-                    if (property.CurrentValue is DateTime dateTimeNullable && dateTimeNullable.Kind != DateTimeKind.Utc)
-                    {
-                        property.CurrentValue = DateTime.SpecifyKind(dateTimeNullable, DateTimeKind.Utc);
+                        // Ensure it's stored as UTC in SQL Server
+                        property.CurrentValue = dt.Kind == DateTimeKind.Unspecified 
+                            ? DateTime.SpecifyKind(dt, DateTimeKind.Utc) 
+                            : dt.ToUniversalTime();
                     }
                 }
             }
@@ -105,12 +105,12 @@ public class AppDbContext : DbContext
         {
             await PasswordResetRequests.AddAsync(request);
             await SaveChangesAsync();
-            Console.WriteLine($"[DEBUG] Password reset request saved for: {email} at {DateTime.UtcNow}");
             return true;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ERROR] Failed to save password reset request: {ex.Message}");
+            // Use a proper logger in production, but this works for debugging Azure startup
+            System.Diagnostics.Trace.TraceError($"[ERROR] Failed to save password reset request: {ex.Message}");
             return false;
         }
     }
