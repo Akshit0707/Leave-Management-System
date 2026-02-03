@@ -24,11 +24,8 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -r linux-x64 --self-contained true -o ./publish
-
-      - name: Fix Permissions
-        # This line is the magic fix for "Permission Denied"
-        run: chmod +x ./publish/LeaveManagement.API
+        # Removed self-contained flags to prevent permission issues
+        run: dotnet publish -c Release -o ./publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -45,17 +42,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-          path: .
+          path: ./publish # Updated path to ensure we are in the right folder
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'leavemgmt'
-          # This replaces the need for "Azure Login"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
-          
+          package: ./publish
 
 
 
