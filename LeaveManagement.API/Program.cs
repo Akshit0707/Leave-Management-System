@@ -4,7 +4,6 @@ using LeaveManagement.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace LeaveManagement.API;
@@ -21,9 +20,9 @@ public class Program
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                // 🔥 FIX: Accept enum values safely (Manager / manager / MANAGER)
                 options.JsonSerializerOptions.Converters.Add(
-                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                    new JsonStringEnumConverter()
                 );
             });
 
@@ -36,12 +35,12 @@ public class Program
             {
                 policy
                     .WithOrigins(
-                        "https://symphonious-biscotti-b6fc95.netlify.app", // 🔴 REPLACE with your Netlify URL
-                        "http://localhost:4200"               // Angular local dev
+                        "https://symphonious-biscotti-b6fc95.netlify.app",
+                        "http://localhost:4200"
                     )
                     .AllowAnyHeader()
                     .AllowAnyMethod();
-                // ❌ DO NOT use AllowCredentials() for JWT
+                // ✅ JWT → no AllowCredentials()
             });
         });
 
@@ -49,19 +48,17 @@ public class Program
            DATABASE (AZURE SQL)
         ======================= */
         var connectionString =
-            builder.Configuration.GetConnectionString("DefaultConnection")
-            ?? Environment.GetEnvironmentVariable("SQLAZURECONNSTR_DefaultConnection");
+            builder.Configuration.GetConnectionString("DefaultConnection");
 
         if (string.IsNullOrWhiteSpace(connectionString))
-            throw new InvalidOperationException("Database connection string not found.");
+            throw new Exception("Azure SQL connection string 'DefaultConnection' not found.");
 
         builder.Services.AddDbContext<AppDbContext>(options =>
-        {
             options.UseSqlServer(connectionString, sql =>
             {
                 sql.EnableRetryOnFailure();
-            });
-        });
+            })
+        );
 
         /* =======================
            DEPENDENCY INJECTION
@@ -74,7 +71,7 @@ public class Program
         ======================= */
         var jwtKey = builder.Configuration["Jwt:Key"];
         if (string.IsNullOrWhiteSpace(jwtKey))
-            throw new InvalidOperationException("JWT Key missing.");
+            throw new Exception("JWT Key missing. Set Jwt__Key in Azure.");
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -102,29 +99,18 @@ public class Program
         var app = builder.Build();
 
         /* =======================
-           APPLY MIGRATIONS
-        ======================= */
-        using (var scope = app.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Database.Migrate();
-        }
-
-        /* =======================
            MIDDLEWARE PIPELINE
         ======================= */
         app.UseSwagger();
         app.UseSwaggerUI();
 
         app.UseRouting();
-
         app.UseCors("AllowFrontend");
 
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
-
         app.MapGet("/health", () => Results.Ok("Healthy"));
 
         app.Run();
