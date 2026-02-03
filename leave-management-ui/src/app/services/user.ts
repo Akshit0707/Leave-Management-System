@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private apiUrl = `${environment.apiUrl}/api/users`;
+  private apiUrl = 'https://leavemgmt-hqgybuaccpf6f6an.eastasia-01.azurewebsites.net/api/users';
 
   constructor(private http: HttpClient) {}
 

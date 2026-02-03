@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 })
 export class Auth {
 
-  private apiUrl = `${environment.apiUrl}/api/auth`;
+  private apiUrl = 'https://leavemgmt-hqgybuaccpf6f6an.eastasia-01.azurewebsites.net/api/auth';
 
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();

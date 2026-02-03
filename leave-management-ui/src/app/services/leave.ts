@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class LeaveService {
 
-  private apiUrl = `${environment.apiUrl}/api/leaves`;
+  private apiUrl = 'https://leavemgmt-hqgybuaccpf6f6an.eastasia-01.azurewebsites.net/api/leaves';
 
   constructor(private http: HttpClient) {}
 

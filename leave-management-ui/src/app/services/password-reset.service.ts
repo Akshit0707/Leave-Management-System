@@ -9,7 +9,7 @@ import { map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PasswordResetService {
-  private apiUrl = `${environment.apiUrl}/api/auth`;
+  private apiUrl = 'https://leavemgmt-hqgybuaccpf6f6an.eastasia-01.azurewebsites.net/api/password-resets';
 
   constructor(private http: HttpClient) {}
 
