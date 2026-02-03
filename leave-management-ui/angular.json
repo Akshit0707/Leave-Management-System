@@ -17,22 +17,22 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/leave-management-ui",
+            "index": "src/index.html",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-  "src/assets",
-  "src/favicon.ico"
-],
-            
+              "src/assets",
+              "src/favicon.ico"
+            ],
             "styles": [
               "src/material-theme.scss",
               "src/styles.css"
             ],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": [],
+            "server": null,
+            "prerender": false,
+            "ssr": false
           },
           "configurations": {
             "production": {
@@ -43,10 +43,10 @@
                   "maximumError": "1MB"
                 },
                 {
-  "type": "anyComponentStyle",
-  "maximumWarning": "15kB", 
-  "maximumError": "20kB"
-}
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "15kB",
+                  "maximumError": "20kB"
+                }
               ],
               "outputHashing": "all"
             },
