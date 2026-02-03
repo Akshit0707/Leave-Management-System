@@ -24,7 +24,8 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./publish
+        # FIX: Added -r linux-x64 and --self-contained true to fix the System.Runtime 10.0 error
+        run: dotnet publish -c Release -r linux-x64 --self-contained true -o ./publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -48,8 +49,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'leavemgmt'
-          # This replaces the need for "Azure Login"
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
-
-
