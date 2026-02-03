@@ -70,8 +70,11 @@ public class Program
            JWT AUTHENTICATION
         ======================= */
         var jwtKey = builder.Configuration["Jwt:Key"];
-        if (string.IsNullOrWhiteSpace(jwtKey))
-            throw new Exception("JWT Key missing. Set Jwt__Key in Azure.");
+       if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    Console.WriteLine("WARNING: JWT Key missing.");
+}
+
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
